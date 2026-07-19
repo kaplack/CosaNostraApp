@@ -1,6 +1,6 @@
 import { getStoredToken } from './apiAuth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+import { API_URL } from '../config/api';
 
 async function getJson(res, fallbackMessage) {
   const body = await res.json().catch(() => null);

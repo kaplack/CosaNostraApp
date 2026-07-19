@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+import { API_URL } from '../config/api';
 const CUSTOMER_TOKEN_KEY = 'cosanostra_customer_token';
 const CUSTOMER_USER_KEY = 'cosanostra_customer_user';
 
