@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, redirect, useLoaderData } from 'react-router-dom';
-import Button from '../../ui/Button';
 import { clearSession, getCurrentAdmin } from '../../services/apiAuth';
 import { getAdminPaymentSettings } from '../../services/apiPaymentSettings';
 
@@ -41,23 +40,15 @@ function AdminDashboard() {
     [paymentSettings],
   );
 
-  function handleLogout() {
-    clearSession();
-    window.location.assign('/admin/login');
-  }
-
   return (
     <div className="px-4 py-8">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8">
         <div>
           <h1 className="text-2xl font-semibold">Panel admin</h1>
           <p className="text-sm text-stone-500">
             Sesion iniciada como {user.name}
           </p>
         </div>
-        <Button type="small" onClick={handleLogout}>
-          Salir
-        </Button>
       </div>
 
       {incompletePayments.length > 0 && (

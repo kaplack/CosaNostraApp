@@ -162,6 +162,7 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
 - [x] Validar direccion predeterminada, pizza guardada, historial y repeticion.
 - [x] Corregir repeticion para conservar referencia a la pizza guardada.
 - [x] Limpiar visualmente el input de imagen al guardar o cancelar una pizza de carta.
+- [x] Agregar layout admin con sidebar y navegacion compartida.
 - [ ] Repetir estos escenarios desde la interfaz en un celular real.
 
 ## Fase Social: Creador de pizzas y comunidad

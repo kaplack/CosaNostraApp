@@ -18,6 +18,9 @@ import AdminDashboard, {
 import AdminLogin, {
   action as adminLoginAction,
 } from './features/admin/AdminLogin';
+import AdminLayout, {
+  loader as adminLayoutLoader,
+} from './features/admin/AdminLayout';
 import AdminPizzas, {
   loader as adminPizzasLoader,
 } from './features/admin/AdminPizzas';
@@ -119,39 +122,41 @@ const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <AdminDashboard />,
-    loader: adminDashboardLoader,
+    element: <AdminLayout />,
+    loader: adminLayoutLoader,
     errorElement: <Error />,
-  },
-  {
-    path: '/admin/pizzas',
-    element: <AdminPizzas />,
-    loader: adminPizzasLoader,
-    errorElement: <Error />,
-  },
-  {
-    path: '/admin/orders',
-    element: <AdminOrders />,
-    loader: adminOrdersLoader,
-    errorElement: <Error />,
-  },
-  {
-    path: '/admin/payments',
-    element: <AdminPayments />,
-    loader: adminPaymentsLoader,
-    errorElement: <Error />,
-  },
-  {
-    path: '/admin/sizes',
-    element: <AdminPizzaSizes />,
-    loader: adminPizzaSizesLoader,
-    errorElement: <Error />,
-  },
-  {
-    path: '/admin/ingredients',
-    element: <AdminIngredients />,
-    loader: adminIngredientsLoader,
-    errorElement: <Error />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard />,
+        loader: adminDashboardLoader,
+      },
+      {
+        path: 'pizzas',
+        element: <AdminPizzas />,
+        loader: adminPizzasLoader,
+      },
+      {
+        path: 'orders',
+        element: <AdminOrders />,
+        loader: adminOrdersLoader,
+      },
+      {
+        path: 'payments',
+        element: <AdminPayments />,
+        loader: adminPaymentsLoader,
+      },
+      {
+        path: 'sizes',
+        element: <AdminPizzaSizes />,
+        loader: adminPizzaSizesLoader,
+      },
+      {
+        path: 'ingredients',
+        element: <AdminIngredients />,
+        loader: adminIngredientsLoader,
+      },
+    ],
   },
 ]);
 
