@@ -164,6 +164,8 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
 - [x] Limpiar visualmente el input de imagen al guardar o cancelar una pizza de carta.
 - [x] Agregar layout admin con sidebar y navegacion compartida.
 - [x] Restringir transiciones de pedidos y bloquear avances sin pago verificado.
+- [x] Reemplazar la tabla de pedidos por tarjetas operativas en pantallas pequenas.
+- [x] Validar visualmente las tarjetas de pedidos en un celular real.
 - [ ] Repetir estos escenarios desde la interfaz en un celular real.
 
 ### Dashboard operativo del admin
