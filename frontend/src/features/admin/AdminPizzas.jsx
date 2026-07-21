@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, redirect } from 'react-router-dom';
 import {
   createAdminPizza,
@@ -35,6 +35,7 @@ function AdminPizzas() {
   const [form, setForm] = useState(emptyForm);
   const [editingPizza, setEditingPizza] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const imageInputRef = useRef(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
 
@@ -71,6 +72,7 @@ function AdminPizzas() {
     setEditingPizza(pizza);
     setForm(pizzaToForm(pizza));
     setImageFile(null);
+    if (imageInputRef.current) imageInputRef.current.value = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -78,6 +80,7 @@ function AdminPizzas() {
     setEditingPizza(null);
     setForm(emptyForm);
     setImageFile(null);
+    if (imageInputRef.current) imageInputRef.current.value = '';
     setError('');
   }
 
@@ -209,6 +212,7 @@ function AdminPizzas() {
         <label className="space-y-1">
           <span className="text-sm font-medium">Imagen</span>
           <input
+            ref={imageInputRef}
             type="file"
             accept="image/png,image/jpeg,image/webp"
             onChange={(e) => setImageFile(e.target.files?.[0] || null)}

@@ -153,6 +153,17 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
   - Limites de subida.
 - [ ] Preparar backup/export de base de datos.
 
+### Avance de validacion del piloto - 21/07/2026
+
+- [x] Validar por API pizza personalizada como invitado y snapshot de receta.
+- [x] Validar efectivo, monto recibido, seguimiento y ciclo completo de estados.
+- [x] Validar Yape/Plin, subida de comprobante, verificacion y bloqueo de aceptacion.
+- [x] Validar registro/login de cliente y asociacion de pedidos a su cuenta.
+- [x] Validar direccion predeterminada, pizza guardada, historial y repeticion.
+- [x] Corregir repeticion para conservar referencia a la pizza guardada.
+- [x] Limpiar visualmente el input de imagen al guardar o cancelar una pizza de carta.
+- [ ] Repetir estos escenarios desde la interfaz en un celular real.
+
 ## Fase Social: Creador de pizzas y comunidad
 
 Objetivo: convertir el constructor en una experiencia compartible que diferencie a Cosa Nostra.
@@ -276,7 +287,7 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 
 ## Pendientes Tecnicos
 
-- [ ] Bug menor: limpiar visualmente input file en admin de insumos despues de guardar.
+- [x] Bug menor: limpiar visualmente input file en admin de insumos despues de guardar.
 - [ ] Considerar `useMemo` para sprites si el builder vuelve a sentirse pesado.
 - [ ] Extraer componentes reutilizables para receta personalizada.
 - [ ] Eliminar o reutilizar `updateOrder` API si prioridad queda fuera definitivamente.

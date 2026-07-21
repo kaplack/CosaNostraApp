@@ -22,6 +22,8 @@ function CustomerOrders() {
           pizzaId: item.pizzaId,
           sourcePizzaId: item.sourcePizzaId,
           isCustom: item.isCustom,
+          savedPizzaId: item.savedPizzaId,
+          savedPizzaName: item.savedPizzaName,
           name: item.name,
           baseName: item.baseName,
           size: item.size,

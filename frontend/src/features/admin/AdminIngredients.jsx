@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, redirect } from 'react-router-dom';
 import {
   createAdminIngredient,
@@ -72,6 +72,7 @@ function AdminIngredients() {
   const [filters, setFilters] = useState({ category: '', isAvailable: '' });
   const [editingIngredient, setEditingIngredient] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const imageInputRef = useRef(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
 
@@ -121,6 +122,8 @@ function AdminIngredients() {
   function startEdit(ingredient) {
     setEditingIngredient(ingredient);
     setForm(ingredientToForm(ingredient));
+    setImageFile(null);
+    if (imageInputRef.current) imageInputRef.current.value = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -128,6 +131,7 @@ function AdminIngredients() {
     setEditingIngredient(null);
     setForm(emptyForm);
     setImageFile(null);
+    if (imageInputRef.current) imageInputRef.current.value = '';
     setError('');
   }
 
@@ -345,6 +349,7 @@ function AdminIngredients() {
           <label className="space-y-1 md:col-span-3">
             <span className="text-sm font-medium">Imagen PNG/WebP transparente</span>
             <input
+              ref={imageInputRef}
               type="file"
               accept="image/png,image/webp"
               onChange={(e) => setImageFile(e.target.files?.[0] || null)}
