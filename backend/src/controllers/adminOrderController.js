@@ -23,6 +23,18 @@ function canAcceptOrder(order) {
   return order.paymentMethod === 'cash' || order.paymentStatus === 'verified';
 }
 
+export const ORDER_STATUS_TRANSITIONS = {
+  pending: ['preparing', 'cancelled'],
+  preparing: ['on_the_way', 'cancelled'],
+  on_the_way: ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
+};
+
+export function canTransitionOrderStatus(currentStatus, nextStatus) {
+  return ORDER_STATUS_TRANSITIONS[currentStatus]?.includes(nextStatus) || false;
+}
+
 export async function listAdminOrders(req, res, next) {
   try {
     const { status, date, priority, paymentStatus } = req.query;
@@ -70,8 +82,14 @@ export async function updateAdminOrderStatus(req, res, next) {
     const currentOrder = await findOrderById(req.params.id.toUpperCase());
     if (!currentOrder) throw notFound(`Pedido ${req.params.id} no encontrado`);
 
-    if (status === 'preparing' && !canAcceptOrder(currentOrder)) {
-      throw badRequest('Verifica el pago antes de aceptar este pedido');
+    if (!canTransitionOrderStatus(currentOrder.status, status)) {
+      throw badRequest(
+        `No se puede cambiar el pedido de ${currentOrder.status} a ${status}`
+      );
+    }
+
+    if (status !== 'cancelled' && !canAcceptOrder(currentOrder)) {
+      throw badRequest('Verifica el pago antes de avanzar este pedido');
     }
 
     const order = await setOrderStatus(req.params.id.toUpperCase(), status);

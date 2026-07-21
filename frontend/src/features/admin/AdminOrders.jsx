@@ -16,6 +16,13 @@ import {
 
 const orderStatuses = ['pending', 'preparing', 'on_the_way', 'delivered', 'cancelled'];
 const paymentStatuses = ['pending', 'pending_review', 'verified', 'rejected'];
+const orderStatusTransitions = {
+  pending: ['preparing', 'cancelled'],
+  preparing: ['on_the_way', 'cancelled'],
+  on_the_way: ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
+};
 
 function canAcceptOrder(order) {
   return order.paymentMethod === 'cash' || order.paymentStatus === 'verified';
@@ -23,6 +30,15 @@ function canAcceptOrder(order) {
 
 function needsPaymentReview(order) {
   return order.paymentMethod !== 'cash' && order.paymentStatus === 'pending_review';
+}
+
+function availableOrderStatuses(order) {
+  const nextStatuses = orderStatusTransitions[order.status] || [];
+  const allowedStatuses = canAcceptOrder(order)
+    ? nextStatuses
+    : nextStatuses.filter((status) => status === 'cancelled');
+
+  return [order.status, ...allowedStatuses];
 }
 
 function formatRecipeQuantity(recipeItem) {
@@ -377,11 +393,12 @@ function AdminOrders() {
                         )}
                         <select
                           value={order.status}
+                          disabled={availableOrderStatuses(order).length === 1}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) => handleStatusChange(order, e.target.value)}
-                          className="rounded-full border border-stone-200 px-3 py-2 text-xs"
+                          className="rounded-full border border-stone-200 px-3 py-2 text-xs disabled:cursor-not-allowed disabled:bg-stone-100 disabled:text-stone-400"
                         >
-                          {orderStatuses.map((item) => (
+                          {availableOrderStatuses(order).map((item) => (
                             <option value={item} key={item}>
                               {formatOrderStatus(item)}
                             </option>

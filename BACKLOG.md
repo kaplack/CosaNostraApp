@@ -163,7 +163,30 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
 - [x] Corregir repeticion para conservar referencia a la pizza guardada.
 - [x] Limpiar visualmente el input de imagen al guardar o cancelar una pizza de carta.
 - [x] Agregar layout admin con sidebar y navegacion compartida.
+- [x] Restringir transiciones de pedidos y bloquear avances sin pago verificado.
 - [ ] Repetir estos escenarios desde la interfaz en un celular real.
+
+### Dashboard operativo del admin
+
+Objetivo: convertir el panel de entrada en un resumen util para tomar decisiones rapidas sin revisar cada modulo.
+
+- [ ] Agregar tarjetas de indicadores:
+  - Pedidos de hoy.
+  - Pedidos pendientes y en preparacion.
+  - Ventas de hoy y de la semana.
+  - Pagos digitales por revisar.
+  - Clientes registrados.
+  - Pizzas activas y agotadas.
+- [ ] Agregar resumen de pedidos por estado.
+- [ ] Mostrar pedidos recientes con acceso directo al detalle.
+- [ ] Mostrar pizzas mas pedidas y pizzas personalizadas mas repetidas.
+- [ ] Agregar selector de periodo: hoy, 7 dias y 30 dias.
+- [ ] Definir e instrumentar analitica de visitas antes de mostrar metricas web:
+  - Visitas totales y visitantes unicos.
+  - Visitas a carta y constructor.
+  - Inicio de checkout y pedidos completados.
+  - Tasa de conversion de visita a pedido.
+- [ ] Evitar almacenar datos personales innecesarios en la analitica.
 
 ## Fase Social: Creador de pizzas y comunidad
 
