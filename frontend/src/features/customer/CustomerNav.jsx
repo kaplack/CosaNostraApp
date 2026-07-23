@@ -7,7 +7,7 @@ import {
   getStoredCustomer,
 } from '../../services/apiCustomerAuth';
 
-function CustomerNav() {
+function CustomerNav({ variant = 'desktop', onNavigate }) {
   const location = useLocation();
   const menuRef = useRef(null);
   const [customer, setCustomer] = useState(() => getStoredCustomer());
@@ -41,11 +41,65 @@ function CustomerNav() {
     };
   }, []);
 
+  if (variant === 'mobileMenu') {
+    if (!customer) {
+      return (
+        <div className="grid grid-cols-2 gap-2 border-t-[3px] border-stone-950 pt-3">
+          <Link
+            to="/login"
+            onClick={onNavigate}
+            className="border-2 border-stone-950 bg-[#fff8e8] px-3 py-3 text-center text-xs font-black uppercase shadow-[2px_2px_0_#111312]"
+          >
+            Ingresar
+          </Link>
+          <Link
+            to="/register"
+            onClick={onNavigate}
+            className="border-2 border-stone-950 bg-[#d7261e] px-3 py-3 text-center text-xs font-black uppercase text-white shadow-[2px_2px_0_#111312]"
+          >
+            Crear cuenta
+          </Link>
+        </div>
+      );
+    }
+
+    return (
+      <div className="border-t-[3px] border-stone-950 pt-3">
+        <div className="mb-2 bg-stone-950 px-3 py-2 text-[#f9bd16]">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em]">Mi cuenta</p>
+          <p className="truncate text-sm font-bold text-white">{customer.name}</p>
+        </div>
+        <div className="grid gap-2">
+          <Link to="/account/orders" onClick={onNavigate} className="flex items-center gap-3 border-2 border-stone-950 bg-[#fff8e8] px-3 py-2 text-sm font-bold uppercase">
+            <FiShoppingBag aria-hidden="true" /> Mis pedidos
+          </Link>
+          <Link to="/account/pizzas" onClick={onNavigate} className="flex items-center gap-3 border-2 border-stone-950 bg-[#fff8e8] px-3 py-2 text-sm font-bold uppercase">
+            <GiFullPizza aria-hidden="true" /> Mis pizzas
+          </Link>
+          <Link to="/account/addresses" onClick={onNavigate} className="flex items-center gap-3 border-2 border-stone-950 bg-[#fff8e8] px-3 py-2 text-sm font-bold uppercase">
+            <FiMapPin aria-hidden="true" /> Mis direcciones
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              clearCustomerSession();
+              setCustomer(null);
+              onNavigate?.();
+            }}
+            className="flex items-center justify-center gap-3 border-2 border-stone-950 bg-[#d7261e] px-3 py-2 text-sm font-black uppercase text-white shadow-[2px_2px_0_#111312]"
+          >
+            <FiLogOut aria-hidden="true" /> Cerrar sesión
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!customer) {
     return (
       <Link
         to="/login"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-stone-900 transition hover:bg-yellow-50"
+        className="inline-flex h-10 w-10 items-center justify-center border-2 border-stone-950 bg-[#fff8e8] text-stone-950 shadow-[2px_2px_0_#111312] transition hover:-translate-y-0.5"
         aria-label="Ingresar"
         title="Ingresar"
       >
@@ -60,7 +114,7 @@ function CustomerNav() {
         <button
           type="button"
           onClick={() => setIsOpen((current) => !current)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-stone-900 transition hover:bg-yellow-50"
+          className="inline-flex h-10 w-10 items-center justify-center border-2 border-stone-950 bg-[#fff8e8] text-stone-950 shadow-[2px_2px_0_#111312] transition hover:-translate-y-0.5"
           aria-label="Abrir menu de usuario"
           aria-expanded={isOpen}
           title="Mi cuenta"
@@ -69,7 +123,7 @@ function CustomerNav() {
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 z-40 mt-3 w-64 rounded-md border border-stone-200 bg-white p-2 text-sm normal-case text-stone-800 shadow-xl">
+          <div className="absolute right-0 z-40 mt-3 w-64 border-[3px] border-stone-950 bg-[#fff8e8] p-2 text-sm normal-case text-stone-800 shadow-[5px_5px_0_#111312]">
             <div className="border-b border-stone-100 px-3 py-3">
               <p className="text-xs uppercase tracking-wide text-stone-400">
                 Mi cuenta
@@ -114,7 +168,7 @@ function CustomerNav() {
           setCustomer(null);
           setIsOpen(false);
         }}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-stone-900 transition hover:bg-yellow-50"
+        className="inline-flex h-10 w-10 items-center justify-center border-2 border-stone-950 bg-[#d7261e] text-white shadow-[2px_2px_0_#111312] transition hover:-translate-y-0.5"
         aria-label="Cerrar sesion"
         title="Salir"
       >

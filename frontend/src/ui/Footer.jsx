@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
-    <footer className="mt-12 border-t border-stone-200 bg-stone-950 px-4 py-8 text-stone-200 sm:px-6">
+    <footer className="border-t-[4px] border-[#f9bd16] bg-stone-950 px-4 py-9 text-stone-200 sm:px-6">
       <div className="mx-auto grid max-w-6xl gap-6 text-sm md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <Link
@@ -22,7 +22,7 @@ function Footer() {
         </div>
 
         <div>
-          <p className="mb-3 font-semibold uppercase text-stone-100">Pide</p>
+          <p className="cn-display mb-3 text-xl uppercase text-[#f9bd16]">Pide</p>
           <div className="grid gap-2 text-stone-400">
             <Link to="/builder" className="hover:text-yellow-300">
               Crea tu pizza
@@ -37,7 +37,7 @@ function Footer() {
         </div>
 
         <div>
-          <p className="mb-3 font-semibold uppercase text-stone-100">Local</p>
+          <p className="cn-display mb-3 text-xl uppercase text-[#f9bd16]">Local</p>
           <div className="space-y-2 text-stone-400">
             <p>Delivery y recojo previa coordinacion.</p>
             <p>Pagos con efectivo, Yape o Plin.</p>

@@ -4,12 +4,10 @@ function OrderItem({ item, isLoadingIngredients, ingredients }) {
   const { quantity, name, totalPrice, customRecipe, size } = item;
 
   return (
-    <li className="space-y-1 py-3">
+    <li className="space-y-1 border-[3px] border-stone-950 bg-[#fff8e8] p-4 shadow-[3px_3px_0_#111312]">
       <div className="flex items-center justify-between gap-4 text-sm">
-        <p>
-          <span className="font-bold">{quantity}&times;</span> {name}
-        </p>
-        <p className="font-bold">{formatCurrency(totalPrice)}</p>
+        <p className="cn-display text-xl uppercase"><span className="text-[#d7261e]">{quantity}&times;</span> {name}</p>
+        <p className="font-black text-[#d7261e]">{formatCurrency(totalPrice)}</p>
       </div>
       {customRecipe ? (
         <div className="space-y-1 text-sm text-stone-500">

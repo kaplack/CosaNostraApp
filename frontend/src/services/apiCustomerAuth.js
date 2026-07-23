@@ -17,8 +17,21 @@ export function getStoredCustomerToken() {
 }
 
 export function getStoredCustomer() {
+  const token = getStoredCustomerToken();
+  if (!token) {
+    localStorage.removeItem(CUSTOMER_USER_KEY);
+    return null;
+  }
+
   const rawUser = localStorage.getItem(CUSTOMER_USER_KEY);
-  return rawUser ? JSON.parse(rawUser) : null;
+  if (!rawUser) return null;
+
+  try {
+    return JSON.parse(rawUser);
+  } catch {
+    clearCustomerSession();
+    return null;
+  }
 }
 
 export function storeCustomerSession({ token, user }) {
@@ -67,16 +80,28 @@ export async function registerCustomer({ name, email, phone, password }) {
 
 export async function getCurrentCustomer() {
   const token = getStoredCustomerToken();
-  if (!token) return null;
+  if (!token) {
+    clearCustomerSession();
+    return null;
+  }
 
   const res = await fetch(`${API_URL}/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  if (res.status === 401 || res.status === 403) {
+    clearCustomerSession();
+    return null;
+  }
+
   const { data } = await getJson(res, 'Sesion invalida');
 
-  if (data.user.role !== 'customer') return null;
+  if (data.user.role !== 'customer') {
+    clearCustomerSession();
+    return null;
+  }
 
   storeCustomerSession({ token, user: data.user });
 

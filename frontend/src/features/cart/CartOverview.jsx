@@ -10,8 +10,8 @@ function CartOverview() {
   if (!totalCartQuantity) return null;
 
   return (
-    <div className="flex items-center justify-between bg-stone-800 px-4 py-4 text-sm uppercase text-stone-200 sm:px-6 md:text-base">
-      <p className="space-x-4 font-semibold text-stone-300">
+    <div className="relative z-40 flex items-center justify-between border-t-[4px] border-stone-950 bg-[#d7261e] px-4 py-3 text-sm uppercase text-white sm:px-6 md:text-base">
+      <p className="space-x-4 font-black">
         <span>
           {totalCartQuantity > 1
             ? totalCartQuantity + ' pizzas'
@@ -19,7 +19,7 @@ function CartOverview() {
         </span>
         <span>{formatCurrency(totalCartPrice)}</span>
       </p>
-      <Link to="/cart">Ver carrito &rarr;</Link>
+      <Link to="/cart" className="border-2 border-stone-950 bg-[#f9bd16] px-3 py-2 text-xs font-black text-stone-950 shadow-[2px_2px_0_#111312]">Ver carrito &rarr;</Link>
     </div>
   );
 }

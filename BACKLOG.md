@@ -134,10 +134,21 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
   - Pago efectivo.
   - Pago Yape/Plin.
 - [ ] Revisar responsive fino:
-  - Header mobile.
-  - Builder mobile.
-  - Checkout mobile.
-  - Admin pedidos en pantalla pequena.
+  - [x] Header mobile.
+    - Mantener una sola fila con menu, logo centrado y carrito.
+    - Integrar cuenta, seguimiento y logout dentro del menu desplegable.
+    - Evitar duplicar el acceso `Pedido` cuando el buscador por codigo ya esta visible.
+  - [ ] Builder mobile.
+  - [ ] Checkout mobile.
+  - [x] Admin pedidos en pantalla pequena.
+- [ ] Redisenar la experiencia mobile-first del constructor:
+  - Evaluar de 2 a 3 propuestas conceptuales en Figma antes de implementar.
+  - Dar protagonismo al preview de la pizza y reducir el scroll vertical.
+  - Separar claramente la vista visual y el detalle de la receta.
+  - Explorar categorias e ingredientes mediante una interfaz compacta.
+  - Mantener tamanos, areas, porciones, pesos, precio, guardado y carrito.
+  - Conservar una experiencia adecuada en escritorio.
+  - Validar el prototipo elegido antes de modificar el builder actual.
 - [ ] Completar datos reales:
   - Horarios.
   - WhatsApp.
@@ -270,6 +281,37 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 - [ ] Descargar QR como PNG.
 - [ ] Copiar link destino.
 
+## Renovacion visual y sistema grafico
+
+Objetivo: dar a Cosa Nostra una identidad reconocible de pizzeria artesanal con comic vintage, sin restar claridad a los flujos de compra.
+
+- [x] Definir un sistema visual reutilizable:
+  - Paleta amarillo, rojo, negro, crema y azul como acento.
+  - Titulares condensados y expresivos; textos funcionales faciles de leer.
+  - Botones y tarjetas con borde oscuro, sombra desplazada y estados accesibles.
+  - Texturas de papel y semitono solo en superficies decorativas.
+- [ ] Aplicar el sistema a Home como piloto:
+  - [x] Header y navegacion.
+  - [x] Hero de `Crea tu pizza`.
+  - [x] Beneficios y carta rapida.
+  - [x] Bloques promocionales y footer.
+  - [x] Validar en escritorio y celular antes de extenderlo.
+  - Llevar Home a ancho completo y eliminar laterales grises.
+  - Usar composicion tipo afiche con superposiciones y separadores irregulares.
+  - Alternar bloques crema, amarillo, rojo, azul y negro para evitar una superficie monotona.
+- [x] Mantener fotografias reales de productos dentro de marcos graficos.
+- [x] Graduar la intensidad visual por contexto:
+  - Alta en Home y marketing.
+  - Media en carta y constructor.
+  - Baja en carrito, checkout, cuenta y admin.
+- [ ] Extender el estilo aprobado a Carta, Builder, carrito y checkout:
+  - [x] Carta: encabezado, selector de tamano, tarjetas y responsive.
+    - Usar filas horizontales compactas para las pizzas en movil.
+    - Permitir ampliar la fotografia de una pizza en un modal accesible.
+  - [ ] Builder.
+  - [x] Carrito y checkout: estilo visual y validacion responsive.
+  - [x] Confirmacion y seguimiento de pedido: estilo visual y validacion responsive.
+
 ## Fase Integraciones
 
 ### Cuenta compartida con Vincu
@@ -314,6 +356,7 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 ## Pendientes Tecnicos
 
 - [x] Bug menor: limpiar visualmente input file en admin de insumos despues de guardar.
+- [x] Limpiar la sesion visual del cliente cuando el token falte, expire o sea rechazado.
 - [ ] Considerar `useMemo` para sprites si el builder vuelve a sentirse pesado.
 - [ ] Extraer componentes reutilizables para receta personalizada.
 - [ ] Eliminar o reutilizar `updateOrder` API si prioridad queda fuera definitivamente.

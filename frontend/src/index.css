@@ -2,6 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --cn-yellow: #f9bd16;
+  --cn-red: #d7261e;
+  --cn-ink: #111312;
+  --cn-cream: #f2e5ce;
+  --cn-blue: #1779a8;
+  --cn-paper: #fff8e8;
+}
+
+body {
+  background: var(--cn-paper);
+  color: var(--cn-ink);
+}
+
+@layer utilities {
+  .cn-paper {
+    background-color: var(--cn-paper);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgb(17 19 18 / 0.06) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 80% 65%, rgb(215 38 30 / 0.08) 0 1px, transparent 1.5px);
+    background-size: 23px 23px, 31px 31px;
+  }
+
+  .cn-halftone-blue {
+    background-image: radial-gradient(circle, rgb(23 121 168 / 0.7) 0 1.5px, transparent 1.8px);
+    background-size: 9px 9px;
+  }
+
+  .cn-display {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-stretch: condensed;
+    letter-spacing: -0.025em;
+  }
+
+  .cn-shadow {
+    box-shadow: 5px 5px 0 var(--cn-ink);
+  }
+}
+
 @layer components {
   .input {
     @apply rounded-full border border-stone-200 px-4 py-2 text-sm transition-all duration-300 placeholder:text-stone-400 focus:outline-none focus:ring focus:ring-yellow-400 md:px-6 md:py-3;

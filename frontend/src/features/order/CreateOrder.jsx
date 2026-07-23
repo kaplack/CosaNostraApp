@@ -155,10 +155,19 @@ function CreateOrder() {
   }
 
   return (
-    <div className="px-4 py-6">
-      <h2 className="mb-8 text-xl font-semibold">Listo para ordenar</h2>
+    <div className="cn-paper min-h-full border-x-[3px] border-stone-950 px-4 py-8 sm:px-8 lg:px-12">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b-[4px] border-stone-950 pb-4">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#d7261e]">Último paso</p>
+          <h1 className="cn-display text-5xl uppercase italic sm:text-6xl">Completa tu pedido</h1>
+        </div>
+        <div className="border-[3px] border-stone-950 bg-[#f9bd16] px-5 py-3 shadow-[4px_4px_0_#111312]">
+          <p className="text-[10px] font-black uppercase">Total</p>
+          <p className="text-xl font-black text-[#d7261e]">{formatCurrency(totalPrice)}</p>
+        </div>
+      </div>
 
-      <Form method="POST" encType="multipart/form-data">
+      <Form method="POST" encType="multipart/form-data" className="mx-auto max-w-4xl [&_.input]:rounded-none [&_.input]:border-2 [&_.input]:border-stone-950 [&_.input]:bg-[#fff8e8] [&_.input]:shadow-[2px_2px_0_#111312] [&_label]:font-bold">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Nombre</label>
           <input
@@ -257,7 +266,7 @@ function CreateOrder() {
         </div>
 
         {customer && selectedAddressId === MANUAL_ADDRESS && (
-          <div className="mb-8 rounded-md border border-stone-200 p-4">
+          <div className="mb-8 border-[3px] border-stone-950 bg-[#fff8e8] p-4 shadow-[3px_3px_0_#111312]">
             <label className="mb-3 flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -281,14 +290,14 @@ function CreateOrder() {
           </div>
         )}
 
-        <div className="mb-8 space-y-4 rounded-md border border-stone-200 p-4">
-          <h3 className="font-semibold">Metodo de pago</h3>
+        <div className="mb-8 space-y-4 border-[3px] border-stone-950 bg-[#fff8e8] p-5 shadow-[5px_5px_0_#111312]">
+          <h2 className="cn-display text-3xl uppercase">Método de pago</h2>
 
           <div className="grid gap-3 sm:grid-cols-3">
             {paymentOptions.map(({ value, label }) => (
               <label
                 key={value}
-                className="flex items-center gap-2 rounded-md border border-stone-200 px-4 py-3 text-sm"
+                className={`flex cursor-pointer items-center gap-2 border-[3px] border-stone-950 px-4 py-3 text-sm uppercase transition ${paymentMethod === value ? 'bg-[#f9bd16] font-black shadow-[3px_3px_0_#111312]' : 'bg-white'}`}
               >
                 <input
                   type="radio"
@@ -342,7 +351,7 @@ function CreateOrder() {
             </div>
           ) : (
             <div className="space-y-2">
-              <div className="rounded-md bg-yellow-50 p-4 text-sm">
+              <div className="border-2 border-stone-950 bg-yellow-50 p-4 text-sm">
                 {selectedPaymentSetting ? (
                   <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
                     <div className="space-y-1">
@@ -364,7 +373,7 @@ function CreateOrder() {
                       <img
                         src={selectedPaymentSetting.qrImageUrl}
                         alt={`QR de ${selectedPaymentSetting.displayName}`}
-                        className="h-32 w-32 rounded-md border border-yellow-200 object-cover"
+                        className="h-32 w-32 border-[3px] border-stone-950 object-cover"
                       />
                     )}
                   </div>
@@ -386,7 +395,7 @@ function CreateOrder() {
                 name="paymentProof"
                 accept="image/png,image/jpeg,image/webp"
                 required
-                className="block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:bg-yellow-400 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-stone-800 hover:file:bg-yellow-300"
+                className="block w-full border-2 border-dashed border-stone-950 bg-white p-2 text-sm file:mr-4 file:border-2 file:border-stone-950 file:bg-yellow-400 file:px-4 file:py-2 file:text-sm file:font-black file:uppercase file:text-stone-800 hover:file:bg-yellow-300"
               />
               <p className="text-xs text-stone-500">
                 Sube una captura del pago para que podamos revisarlo.
@@ -400,13 +409,13 @@ function CreateOrder() {
           )}
         </div>
 
-        <div>
+        <div className="flex justify-end">
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button disabled={isSubmitting || isLoadingAddress} type="small">
+          <button disabled={isSubmitting || isLoadingAddress} type="submit" className="cn-shadow border-[3px] border-stone-950 bg-[#f9bd16] px-6 py-4 text-sm font-black uppercase transition hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-60">
             {isSubmitting
               ? 'Procesando el pedido'
               : `Ordenar ahora por ${formatCurrency(totalPrice)}`}
-          </Button>
+          </button>
         </div>
       </Form>
     </div>

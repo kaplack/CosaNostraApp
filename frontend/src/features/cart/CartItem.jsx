@@ -7,11 +7,9 @@ function CartItem({ item }) {
   //const currentQuantity = useSelector(get)
 
   return (
-    <li className="py-3 sm:flex sm:items-start sm:justify-between sm:gap-6">
+    <li className="border-[3px] border-stone-950 bg-[#fff8e8] p-4 shadow-[4px_4px_0_#111312] sm:flex sm:items-start sm:justify-between sm:gap-6">
       <div className="min-w-0">
-        <p className="mb-1 sm:mb-0">
-          {quantity}&times; {name}
-        </p>
+        <p className="cn-display mb-1 text-2xl uppercase leading-none sm:mb-0">{name}</p>
         {!customRecipe && size && (
           <p className="text-xs text-stone-500">
             {size.diameterCm} cm / {size.slices} tajadas
@@ -42,8 +40,10 @@ function CartItem({ item }) {
         )}
       </div>
       <div className="mt-3 flex items-center justify-between sm:mt-0 sm:gap-6">
-        <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
-        <UpdateItemQuantity pizzaId={pizzaId} currentQuantity={quantity} />
+        <p className="text-base font-black text-[#d7261e]">{formatCurrency(totalPrice)}</p>
+        <div className="border-2 border-stone-950 bg-[#f9bd16] p-1 shadow-[2px_2px_0_#111312]">
+          <UpdateItemQuantity pizzaId={pizzaId} currentQuantity={quantity} />
+        </div>
       </div>
     </li>
   );
