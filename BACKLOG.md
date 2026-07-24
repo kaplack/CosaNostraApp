@@ -142,13 +142,15 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
   - [ ] Checkout mobile.
   - [x] Admin pedidos en pantalla pequena.
 - [ ] Redisenar la experiencia mobile-first del constructor:
-  - Evaluar de 2 a 3 propuestas conceptuales en Figma antes de implementar.
-  - Dar protagonismo al preview de la pizza y reducir el scroll vertical.
-  - Separar claramente la vista visual y el detalle de la receta.
-  - Explorar categorias e ingredientes mediante una interfaz compacta.
-  - Mantener tamanos, areas, porciones, pesos, precio, guardado y carrito.
-  - Conservar una experiencia adecuada en escritorio.
-  - Validar el prototipo elegido antes de modificar el builder actual.
+  - [x] Sustituir la exploracion en Figma por un prototipo funcional incremental dentro de la app.
+  - [x] Dar protagonismo al preview de la pizza y reducir el scroll vertical.
+  - [x] Separar la vista visual y el detalle de la receta mediante pestanas.
+  - [x] Navegar categorias, ingredientes y cantidad mediante controles inferiores progresivos.
+  - [x] Seleccionar toda, izquierda o derecha directamente sobre la pizza.
+  - [x] Mostrar accesos laterales a los toppings agregados.
+  - [x] Mantener tamanos, areas, porciones, pesos, precio, guardado y carrito.
+  - [x] Conservar la experiencia existente en escritorio durante el prototipo movil.
+  - [ ] Validar el prototipo funcional en celular antes de pulirlo o agregar drag-and-drop.
 - [ ] Completar datos reales:
   - Horarios.
   - WhatsApp.
@@ -310,8 +312,12 @@ Objetivo: dar a Cosa Nostra una identidad reconocible de pizzeria artesanal con 
     - Usar filas horizontales compactas para las pizzas en movil.
     - Permitir ampliar la fotografia de una pizza en un modal accesible.
   - [ ] Builder.
+    - [x] Primera interfaz compacta mobile-first implementada.
+    - [ ] Validar jerarquia, alturas y comodidad de los controles en un celular real.
   - [x] Carrito y checkout: estilo visual y validacion responsive.
   - [x] Confirmacion y seguimiento de pedido: estilo visual y validacion responsive.
+  - [x] Login y registro de clientes: nuevo estilo visual, formularios accesibles e implementacion responsive.
+  - [ ] Validar visualmente login y registro en escritorio y celular.
 
 ## Fase Integraciones
 

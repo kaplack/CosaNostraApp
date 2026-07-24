@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  FiArrowLeft,
+  FiCircle,
+  FiDroplet,
+  FiGrid,
+  FiLayers,
+  FiList,
+  FiMinus,
+  FiPackage,
+  FiPlus,
+  FiShoppingCart,
+  FiStar,
+} from 'react-icons/fi';
+import {
   getBuilderIngredients,
   getBuilderPizzaSizes,
 } from '../../services/apiRestaurant';
@@ -24,6 +37,14 @@ const ingredientCategories = [
   ['vegetable', 'Vegetales'],
   ['extra', 'Extras'],
 ];
+const mobileCategoryIcons = {
+  base: FiCircle,
+  sauce: FiDroplet,
+  cheese: FiLayers,
+  protein: FiGrid,
+  vegetable: FiStar,
+  extra: FiPackage,
+};
 const TOPPING_MIN_RADIUS = 4;
 const TOPPING_MAX_RADIUS = 34;
 const TOPPING_LAYER_INSET = 11;
@@ -271,6 +292,9 @@ function PizzaBuilder() {
   const [saveName, setSaveName] = useState('');
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMessage, setSaveMessage] = useState('');
+  const [mobileTab, setMobileTab] = useState('pizza');
+  const [mobileStep, setMobileStep] = useState('categories');
+  const [mobileIngredientId, setMobileIngredientId] = useState(null);
 
   useEffect(function () {
     async function loadBuilderData() {
@@ -342,6 +366,23 @@ function PizzaBuilder() {
     [ingredients, selectedCategory],
   );
 
+  const mobileCategories = useMemo(
+    () =>
+      ingredientCategories
+        .filter(([value]) => value !== 'all')
+        .filter(([value]) => ingredients.some((ingredient) => ingredient.category === value)),
+    [ingredients],
+  );
+
+  const mobileIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.category === selectedCategory),
+    [ingredients, selectedCategory],
+  );
+
+  const mobileIngredient = ingredients.find(
+    (ingredient) => ingredient.id === mobileIngredientId,
+  );
+
   function changePortions(ingredient, delta) {
     const area = ingredient.supportsPartialArea ? selectedArea : 'whole';
     const key = selectionKey(ingredient.id, area);
@@ -387,6 +428,28 @@ function PizzaBuilder() {
         },
       };
     });
+  }
+
+  function openMobileCategory(category) {
+    setSelectedCategory(category);
+    setMobileIngredientId(null);
+    setMobileStep('ingredients');
+  }
+
+  function openMobileIngredient(ingredient) {
+    setMobileIngredientId(ingredient.id);
+    setMobileStep('ingredient');
+  }
+
+  function goBackMobileControls() {
+    if (mobileStep === 'ingredient') {
+      setMobileIngredientId(null);
+      setMobileStep('ingredients');
+      return;
+    }
+
+    setSelectedCategory('all');
+    setMobileStep('categories');
   }
 
   function handleAddCustomPizzaToCart() {
@@ -458,7 +521,11 @@ function PizzaBuilder() {
   );
   const scatterSprites = buildScatterSprites(scatterItems, selectedSize);
 
-  function renderPizzaCanvas(maxWidthClass = 'max-w-[620px]', framed = true) {
+  function renderPizzaCanvas(
+    maxWidthClass = 'max-w-[620px]',
+    framed = true,
+    interactiveArea = false,
+  ) {
     return (
       <div
         className={`mx-auto aspect-square w-full ${maxWidthClass} ${
@@ -505,6 +572,34 @@ function PizzaBuilder() {
               }}
             />
           ))}
+
+          {interactiveArea && (
+            <div className="absolute inset-[9%] z-20 rounded-full" aria-label="Selecciona dónde colocar el ingrediente">
+              <button
+                type="button"
+                onClick={() => setSelectedArea('left')}
+                aria-label="Aplicar en la mitad izquierda"
+                aria-pressed={selectedArea === 'left'}
+                className={`absolute inset-y-0 left-0 w-1/2 rounded-l-full border-y-2 border-l-2 border-dashed transition ${selectedArea === 'left' ? 'border-[#d7261e] bg-[#d7261e]/15' : 'border-transparent hover:border-stone-950/40'}`}
+              />
+              <button
+                type="button"
+                onClick={() => setSelectedArea('right')}
+                aria-label="Aplicar en la mitad derecha"
+                aria-pressed={selectedArea === 'right'}
+                className={`absolute inset-y-0 right-0 w-1/2 rounded-r-full border-y-2 border-r-2 border-dashed transition ${selectedArea === 'right' ? 'border-[#d7261e] bg-[#d7261e]/15' : 'border-transparent hover:border-stone-950/40'}`}
+              />
+              <button
+                type="button"
+                onClick={() => setSelectedArea('whole')}
+                aria-label="Aplicar en toda la pizza"
+                aria-pressed={selectedArea === 'whole'}
+                className={`absolute left-1/2 top-1/2 z-10 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] text-[10px] font-black uppercase shadow-[3px_3px_0_#111312] transition ${selectedArea === 'whole' ? 'border-stone-950 bg-[#f9bd16]' : 'border-stone-950/70 bg-[#fff8e8]/85'}`}
+              >
+                Toda
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -594,20 +689,188 @@ function PizzaBuilder() {
     );
   }
 
+  const mobileIngredientArea = mobileIngredient?.supportsPartialArea
+    ? selectedArea
+    : 'whole';
+  const mobileIngredientPortions = mobileIngredient
+    ? selections[selectionKey(mobileIngredient.id, mobileIngredientArea)]?.portions || 0
+    : 0;
+
   return (
-    <div className="px-4 py-6">
-      <section className="sticky top-0 z-20 mb-5 rounded-md bg-stone-100/95 py-2 shadow-sm lg:hidden">
-        {renderPizzaCanvas('max-w-[170px]', false)}
+    <div>
+      <section className="cn-paper flex min-h-[calc(100dvh-62px)] flex-col border-x-[3px] border-stone-950 lg:hidden">
+        <header className="flex items-center justify-between gap-3 border-b-[3px] border-stone-950 bg-[#f9bd16] px-4 py-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em]">Laboratorio Cosa Nostra</p>
+            <h1 className="cn-display truncate text-3xl uppercase italic leading-none">Crea tu pizza</h1>
+          </div>
+          <div className="shrink-0 border-[3px] border-stone-950 bg-[#fff8e8] px-3 py-2 text-right shadow-[3px_3px_0_#111312]">
+            <p className="text-[9px] font-black uppercase text-stone-500">Total</p>
+            <p className="font-black text-[#d7261e]">{formatCurrency(estimatedPrice)}</p>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-2 border-b-[3px] border-stone-950 bg-stone-950 p-1">
+          <button type="button" onClick={() => setMobileTab('pizza')} className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-black uppercase ${mobileTab === 'pizza' ? 'bg-[#f9bd16] text-stone-950' : 'text-white'}`}>
+            <FiCircle /> Pizza
+          </button>
+          <button type="button" onClick={() => setMobileTab('detail')} className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-black uppercase ${mobileTab === 'detail' ? 'bg-[#f9bd16] text-stone-950' : 'text-white'}`}>
+            <FiList /> Detalle <span className="rounded-full bg-[#d7261e] px-1.5 py-0.5 text-[9px] text-white">{selectedItems.length}</span>
+          </button>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto border-b-[3px] border-stone-950 bg-[#fff8e8] px-3 py-2">
+          {sizes.map((size) => (
+            <button
+              type="button"
+              key={size.id}
+              onClick={() => setSelectedSizeId(String(size.id))}
+              className={`shrink-0 border-2 border-stone-950 px-3 py-1.5 text-[10px] font-black uppercase ${selectedSizeId === String(size.id) ? 'bg-stone-950 text-[#f9bd16]' : 'bg-white text-stone-700'}`}
+            >
+              {size.name} · {size.diameterCm} cm
+            </button>
+          ))}
+        </div>
+
+        {mobileTab === 'pizza' ? (
+          <div className="relative flex min-h-[300px] flex-1 items-center justify-center overflow-hidden px-9 py-3">
+            <div className="absolute left-2 top-3 z-30 flex max-h-[70%] w-12 flex-col gap-2 overflow-y-auto" aria-label="Ingredientes agregados">
+              {selectedItems.filter((item) => item.ingredient.category !== 'base').map((item) => (
+                <button
+                  type="button"
+                  key={`${item.ingredientId}-${item.area}`}
+                  onClick={() => {
+                    setSelectedCategory(item.ingredient.category);
+                    setMobileIngredientId(item.ingredient.id);
+                    setMobileStep('ingredient');
+                  }}
+                  className="relative grid h-11 w-11 shrink-0 place-items-center border-[2px] border-stone-950 bg-white shadow-[2px_2px_0_#111312]"
+                  aria-label={`Editar ${item.ingredient.name}, ${formatArea(item.area)}`}
+                >
+                  {item.ingredient.imageUrl && <img src={item.ingredient.imageUrl} alt="" className="h-9 w-9 object-contain" />}
+                  <span className="absolute -right-1 -top-1 rounded-full border border-stone-950 bg-[#f9bd16] px-1 text-[9px] font-black">{item.portions}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="w-full max-w-[390px]">
+              {renderPizzaCanvas('max-w-[390px]', false, true)}
+              <p className="mt-1 text-center text-[10px] font-black uppercase tracking-[0.08em] text-stone-600">
+                Área: <span className="text-[#d7261e]">{formatArea(selectedArea)}</span> · toca la pizza para cambiar
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="min-h-[300px] flex-1 overflow-y-auto p-4">
+            <div className="border-[3px] border-stone-950 bg-[#fff8e8] shadow-[5px_5px_0_#111312]">
+              <div className="flex items-center justify-between border-b-[3px] border-stone-950 bg-[#f9bd16] px-4 py-3">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.16em]">Tu receta</p>
+                  <h2 className="cn-display text-2xl uppercase italic">{selectedSize?.name}</h2>
+                </div>
+                <p className="font-black text-[#d7261e]">{formatCurrency(estimatedPrice)}</p>
+              </div>
+              <ul className="divide-y-2 divide-stone-300 px-4">
+                {selectedItems.map((item) => (
+                  <li key={`${item.ingredientId}-${item.area}`} className="flex items-center justify-between gap-3 py-3 text-xs">
+                    <span className="min-w-0">
+                      <span className="block font-black uppercase">{item.ingredient.name} × {item.portions}</span>
+                      <span className="text-stone-500">{formatArea(item.area)} · {formatQuantity(ingredientTotalQuantity(item, selectedSize))} {item.ingredient.unit}</span>
+                    </span>
+                    <span className="shrink-0 font-black">{formatCurrency(item.ingredient.pricePerPortion * item.portions * (selectedSize?.portionMultiplier || 1))}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-5 border-[3px] border-stone-950 bg-white p-4">
+              <p className="text-xs font-black uppercase">Guardar esta pizza</p>
+              {customer ? (
+                <div className="mt-3 flex gap-2">
+                  <input value={saveName} onChange={(event) => setSaveName(event.target.value)} placeholder="Ponle un nombre" className="min-w-0 flex-1 border-[2px] border-stone-950 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#f9bd16]" />
+                  <button type="button" onClick={handleSaveCustomPizza} disabled={saveStatus === 'saving'} className="border-[2px] border-stone-950 bg-[#f9bd16] px-3 text-[10px] font-black uppercase disabled:opacity-60">{saveStatus === 'saving' ? 'Guardando' : 'Guardar'}</button>
+                </div>
+              ) : (
+                <p className="mt-2 text-xs text-stone-500">Inicia sesión para guardar tus creaciones.</p>
+              )}
+              {saveMessage && <p className="mt-2 text-xs font-bold text-stone-600">{saveMessage}</p>}
+            </div>
+          </div>
+        )}
+
+        <div className="border-t-[3px] border-stone-950 bg-[#f9bd16]">
+          <div className="flex min-h-[116px] items-center px-3 py-3">
+            {mobileStep !== 'categories' && (
+              <button type="button" onClick={goBackMobileControls} className="mr-2 grid h-12 w-10 shrink-0 place-items-center border-[2px] border-stone-950 bg-[#fff8e8] shadow-[2px_2px_0_#111312]" aria-label="Volver">
+                <FiArrowLeft />
+              </button>
+            )}
+
+            {mobileStep === 'categories' && (
+              <div className="flex w-full gap-2 overflow-x-auto pb-1">
+                {mobileCategories.map(([value, label]) => {
+                  const Icon = mobileCategoryIcons[value] || FiPackage;
+                  return (
+                    <button type="button" key={value} onClick={() => openMobileCategory(value)} className="flex min-w-[74px] shrink-0 flex-col items-center gap-1 border-[2px] border-stone-950 bg-[#fff8e8] px-2 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0_#111312]">
+                      <Icon className="text-xl" /> {label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {mobileStep === 'ingredients' && (
+              <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1">
+                {mobileIngredients.map((ingredient) => {
+                  const area = ingredient.supportsPartialArea ? selectedArea : 'whole';
+                  const portions = selections[selectionKey(ingredient.id, area)]?.portions || 0;
+                  return (
+                    <button type="button" key={ingredient.id} onClick={() => openMobileIngredient(ingredient)} className={`relative flex min-w-[78px] shrink-0 flex-col items-center border-[2px] border-stone-950 px-2 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0_#111312] ${portions ? 'bg-stone-950 text-white' : 'bg-[#fff8e8]'}`}>
+                      {ingredient.imageUrl ? <img src={ingredient.imageUrl} alt="" className="h-11 w-11 object-contain" /> : <span className="h-11" />}
+                      <span className="mt-1 max-w-[70px] truncate">{ingredient.name}</span>
+                      {portions > 0 && <span className="absolute right-1 top-1 rounded-full bg-[#d7261e] px-1.5 py-0.5 text-[9px] text-white">{portions}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {mobileStep === 'ingredient' && mobileIngredient && (
+              <div className="flex min-w-0 flex-1 items-center gap-3 border-[2px] border-stone-950 bg-[#fff8e8] p-2 shadow-[2px_2px_0_#111312]">
+                {mobileIngredient.imageUrl && <img src={mobileIngredient.imageUrl} alt="" className="h-14 w-14 shrink-0 object-contain" />}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-black uppercase">{mobileIngredient.name}</p>
+                  <p className="text-[10px] font-semibold text-stone-500">{formatArea(mobileIngredientArea)} · {formatQuantity(mobileIngredient.portionQuantity * mobileIngredientPortions * (selectedSize?.portionMultiplier || 1))} {mobileIngredient.unit}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button type="button" onClick={() => changePortions(mobileIngredient, -1)} disabled={mobileIngredientPortions === 0} className="grid h-10 w-10 place-items-center rounded-full border-[2px] border-stone-950 bg-white disabled:opacity-30" aria-label={`Quitar ${mobileIngredient.name}`}><FiMinus /></button>
+                  <span className="w-5 text-center font-black">{mobileIngredientPortions}</span>
+                  <button type="button" onClick={() => changePortions(mobileIngredient, 1)} disabled={mobileIngredientPortions >= mobileIngredient.maxPortions} className="grid h-10 w-10 place-items-center rounded-full border-[2px] border-stone-950 bg-[#d7261e] text-white disabled:opacity-30" aria-label={`Agregar ${mobileIngredient.name}`}><FiPlus /></button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 border-t-[3px] border-stone-950 bg-[#d7261e] px-3 py-2 text-white">
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] font-black uppercase tracking-[0.12em]">{selectedItems.length} ingredientes</p>
+              <p className="font-black">{formatCurrency(estimatedPrice)}</p>
+            </div>
+            <button type="button" onClick={handleAddCustomPizzaToCart} className="inline-flex items-center gap-2 border-[2px] border-stone-950 bg-[#f9bd16] px-4 py-2 text-xs font-black uppercase text-stone-950 shadow-[2px_2px_0_#111312]">
+              <FiShoppingCart /> Agregar
+            </button>
+          </div>
+          {(cartMessage || saveMessage) && <p className="bg-stone-950 px-3 py-1.5 text-center text-[10px] font-bold text-white">{cartMessage || saveMessage}</p>}
+        </div>
       </section>
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Crea tu pizza</h1>
-        <p className="text-sm text-stone-500">
-          Arma tu pizza, revisa pesos y agregala al carrito.
-        </p>
-      </div>
+      <div className="hidden px-4 py-6 lg:block">
+        <div className="mb-6">
+          <h1 className="cn-display text-5xl uppercase italic">Crea tu pizza</h1>
+          <p className="text-sm text-stone-500">Arma tu pizza, revisa pesos y agrégala al carrito.</p>
+        </div>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.9fr)_minmax(0,1.1fr)]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.9fr)_minmax(0,1.1fr)]">
         <section className="space-y-5">
           <div className="rounded-md border border-stone-200 p-3 sm:p-4">
             <h2 className="mb-3 font-semibold">Tamano</h2>
@@ -735,13 +998,13 @@ function PizzaBuilder() {
             </div>
           </div>
 
-          <div className="lg:hidden">{renderSummaryCard()}</div>
         </section>
 
-        <section className="hidden lg:sticky lg:top-6 lg:block lg:self-start">
+        <section className="sticky top-6 self-start">
           {renderPizzaCanvas()}
           {renderSummaryCard()}
         </section>
+        </div>
       </div>
     </div>
   );

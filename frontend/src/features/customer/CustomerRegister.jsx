@@ -1,6 +1,6 @@
 import { Form, Link, redirect, useActionData, useNavigation } from 'react-router-dom';
+import { FiArrowRight, FiCheck } from 'react-icons/fi';
 import { registerCustomer } from '../../services/apiCustomerAuth';
-import Button from '../../ui/Button';
 
 function CustomerRegister() {
   const error = useActionData();
@@ -8,55 +8,62 @@ function CustomerRegister() {
   const isSubmitting = navigation.state === 'submitting';
 
   return (
-    <div className="mx-auto max-w-md px-4 py-10">
-      <h2 className="mb-2 text-2xl font-semibold">Crear cuenta</h2>
-      <p className="mb-6 text-sm text-stone-600">
-        Guarda tus pedidos sin perder la opcion de comprar como invitado.
-      </p>
+    <section className="cn-paper min-h-[680px] border-x-[3px] border-stone-950 px-4 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="mx-auto grid max-w-5xl overflow-hidden border-[4px] border-stone-950 shadow-[8px_8px_0_#111312] lg:grid-cols-[0.8fr_1.2fr]">
+        <aside className="relative overflow-hidden border-b-[4px] border-stone-950 bg-[#f9bd16] p-6 lg:border-b-0 lg:border-r-[4px] lg:p-9">
+          <div className="absolute -right-12 -top-12 h-32 w-32 rotate-12 bg-[#1779a8]" aria-hidden="true" />
+          <p className="relative text-xs font-black uppercase tracking-[0.2em]">Hazla siempre a tu manera</p>
+          <h1 className="cn-display relative mt-3 text-5xl uppercase italic leading-[0.85] sm:text-6xl">Únete a la familia</h1>
+          <ul className="relative mt-7 space-y-3 text-sm font-bold">
+            {['Guarda tus pizzas', 'Repite pedidos en segundos', 'Administra tus direcciones'].map((benefit) => (
+              <li key={benefit} className="flex items-center gap-2">
+                <span className="grid h-6 w-6 place-items-center border-2 border-stone-950 bg-[#fff8e8]"><FiCheck /></span>
+                {benefit}
+              </li>
+            ))}
+          </ul>
+        </aside>
 
-      <Form method="POST" className="space-y-4 rounded-md border border-stone-200 p-5">
-        <label className="space-y-1">
-          <span className="text-sm font-medium">Nombre</span>
-          <input name="name" required className="input w-full" />
-        </label>
+        <div className="bg-[#fff8e8] p-6 sm:p-8 lg:p-10">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#d7261e]">Tu próxima pizza empieza aquí</p>
+          <h2 className="cn-display mt-2 text-4xl uppercase italic leading-none sm:text-5xl">Crear cuenta</h2>
+          <p className="mt-3 text-sm font-semibold leading-6 text-stone-600">Guarda tus pedidos sin perder la opción de comprar como invitado.</p>
 
-        <label className="space-y-1">
-          <span className="text-sm font-medium">WhatsApp</span>
-          <input name="phone" type="tel" required className="input w-full" />
-        </label>
+          <Form method="POST" className="mt-7 grid gap-5 sm:grid-cols-2">
+            <label htmlFor="register-name" className="block">
+              <span className="text-xs font-black uppercase tracking-[0.12em]">Nombre</span>
+              <input id="register-name" name="name" autoComplete="name" required className="mt-2 w-full border-[3px] border-stone-950 bg-white px-4 py-3 text-sm font-semibold shadow-[3px_3px_0_#111312] focus:outline-none focus:ring-2 focus:ring-[#f9bd16]" />
+            </label>
 
-        <label className="space-y-1">
-          <span className="text-sm font-medium">Email</span>
-          <input name="email" type="email" required className="input w-full" />
-        </label>
+            <label htmlFor="register-phone" className="block">
+              <span className="text-xs font-black uppercase tracking-[0.12em]">WhatsApp</span>
+              <input id="register-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" required className="mt-2 w-full border-[3px] border-stone-950 bg-white px-4 py-3 text-sm font-semibold shadow-[3px_3px_0_#111312] focus:outline-none focus:ring-2 focus:ring-[#f9bd16]" />
+            </label>
 
-        <label className="space-y-1">
-          <span className="text-sm font-medium">Password</span>
-          <input
-            name="password"
-            type="password"
-            minLength="6"
-            required
-            className="input w-full"
-          />
-        </label>
+            <label htmlFor="register-email" className="block sm:col-span-2">
+              <span className="text-xs font-black uppercase tracking-[0.12em]">Email</span>
+              <input id="register-email" name="email" type="email" autoComplete="email" required className="mt-2 w-full border-[3px] border-stone-950 bg-white px-4 py-3 text-sm font-semibold shadow-[3px_3px_0_#111312] focus:outline-none focus:ring-2 focus:ring-[#f9bd16]" />
+            </label>
 
-        {error && (
-          <p className="rounded-md bg-red-100 p-2 text-xs text-red-700">
-            {error}
+            <label htmlFor="register-password" className="block sm:col-span-2">
+              <span className="text-xs font-black uppercase tracking-[0.12em]">Contraseña</span>
+              <input id="register-password" name="password" type="password" minLength="6" autoComplete="new-password" required className="mt-2 w-full border-[3px] border-stone-950 bg-white px-4 py-3 text-sm font-semibold shadow-[3px_3px_0_#111312] focus:outline-none focus:ring-2 focus:ring-[#f9bd16]" />
+              <span className="mt-2 block text-xs font-semibold text-stone-500">Mínimo 6 caracteres.</span>
+            </label>
+
+            {error && <p role="alert" className="border-[3px] border-red-800 bg-red-100 p-3 text-xs font-bold text-red-800 sm:col-span-2">{error}</p>}
+
+            <button disabled={isSubmitting} type="submit" className="cn-shadow inline-flex w-full items-center justify-center gap-2 border-[3px] border-stone-950 bg-[#f9bd16] px-5 py-3 text-sm font-black uppercase transition hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2">
+              {isSubmitting ? 'Creando...' : 'Crear cuenta'} {!isSubmitting && <FiArrowRight />}
+            </button>
+          </Form>
+
+          <p className="mt-6 border-t-2 border-stone-300 pt-5 text-sm font-semibold text-stone-600">
+            ¿Ya tienes cuenta? <Link to="/login" className="font-black uppercase text-[#d7261e] underline decoration-2 underline-offset-4">Ingresar</Link>
           </p>
-        )}
-
-        <div className="flex flex-wrap items-center gap-4">
-          <Button disabled={isSubmitting} type="small">
-            {isSubmitting ? 'Creando...' : 'Crear cuenta'}
-          </Button>
-          <Link to="/login" className="text-sm text-blue-600 hover:underline">
-            Ya tengo cuenta
-          </Link>
         </div>
-      </Form>
-    </div>
+      </div>
+    </section>
   );
 }
 
