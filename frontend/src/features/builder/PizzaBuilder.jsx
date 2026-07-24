@@ -306,6 +306,7 @@ function PizzaBuilder() {
   const [saveName, setSaveName] = useState('');
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMessage, setSaveMessage] = useState('');
+  const [lastSavedPizza, setLastSavedPizza] = useState(null);
   const [mobileTab, setMobileTab] = useState('pizza');
   const [mobileStep, setMobileStep] = useState('categories');
   const [mobileIngredientId, setMobileIngredientId] = useState(null);
@@ -474,10 +475,16 @@ function PizzaBuilder() {
     if (!selectedSize || selectedItems.length === 0) return;
 
     const recipe = buildCustomRecipe(selectedItems, selectedSize);
+    const matchingSavedPizza =
+      lastSavedPizza &&
+      JSON.stringify(lastSavedPizza.recipe) === JSON.stringify(recipe)
+        ? lastSavedPizza
+        : null;
     const cartItem = createCustomCartItem({
       selectedSize,
       estimatedPrice,
       recipe,
+      savedPizza: matchingSavedPizza,
     });
 
     dispatch(addItem(cartItem));
@@ -503,19 +510,10 @@ function PizzaBuilder() {
         estimatedPrice,
       });
 
-      dispatch(
-        addItem(
-          createCustomCartItem({
-            selectedSize,
-            estimatedPrice,
-            recipe,
-            savedPizza,
-          }),
-        ),
-      );
+      setLastSavedPizza(savedPizza);
       setSaveName('');
       setCartMessage('');
-      setSaveMessage('Pizza guardada y agregada al carrito.');
+      setSaveMessage('Pizza guardada. Puedes agregarla al carrito cuando quieras.');
       setSaveStatus('idle');
     } catch (err) {
       setSaveMessage(err.message);

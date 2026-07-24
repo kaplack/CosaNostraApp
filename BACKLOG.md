@@ -108,6 +108,7 @@ Decisiones base:
 - [x] Peso/cantidad total por ingrediente.
 - [x] Agregar pizza personalizada al carrito.
 - [x] Guardar pizza personalizada con nombre.
+- [x] Separar guardar y agregar al carrito para evitar pizzas duplicadas; conservar la referencia si la receta guardada no cambio.
 - [x] Pedidos guardan snapshot completo de receta.
 
 ### 5. Experiencia publica
@@ -217,10 +218,12 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 
 ### 1. Pizzas publicas compartibles
 
-- [ ] Permitir marcar una pizza guardada como publica/privada.
-- [ ] Crear slug publico para pizza guardada.
-- [ ] Pagina publica `/p/:slug`.
-- [ ] Mostrar:
+- [x] Mantener pizzas privadas por defecto.
+- [x] Agregar nombre publico y slug de creador sin exponer email, telefono o direcciones.
+- [x] Permitir publicar o retirar una pizza guardada desde `Mis pizzas`.
+- [x] Crear slug publico estable para pizza guardada.
+- [x] Pagina publica `/p/:slug`.
+- [x] Mostrar:
   - Nombre de la pizza.
   - Autor.
   - Tamano.
@@ -228,10 +231,26 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
   - Receta resumida.
   - Precio estimado.
   - Boton `Pedir esta pizza`.
-- [ ] Boton `Ordenar esta pizza` agrega la receta compartida al carrito como pizza personalizada.
-- [ ] Mantener referencia al creador original de la pizza compartida.
+- [x] Boton `Pedir esta pizza` agrega la receta compartida al carrito como pizza personalizada.
+- [x] Mantener `savedPizzaId`, slug compartido e identificador del creador original en el snapshot del carrito y pedido.
+- [ ] Validar visualmente publicacion, pagina publica y pedido compartido en escritorio y celular.
 - [ ] Compartir enlace por WhatsApp, Facebook y copiar link.
 - [ ] Preparar compartir visual para Instagram/TikTok como captura o asset.
+
+### 1.1 Perfiles de creadores
+
+- [ ] Pagina publica `/creadores/:slug`.
+- [ ] Mostrar nombre publico, avatar y descripcion opcionales.
+- [ ] Mostrar pizzas publicadas por el creador.
+- [ ] Mostrar likes acumulados y numero de pedidos generados por sus pizzas.
+- [ ] No exponer email, telefono, direcciones ni nombre privado.
+- [ ] Permitir al creador editar o desactivar su perfil publico.
+
+### 1.2 Galeria de comunidad
+
+- [ ] Pagina `/comunidad` con pizzas publicas.
+- [ ] Ordenar por recientes, mas pedidas y mas gustadas.
+- [ ] Enlazar cada pizza y su creador.
 
 ### 2. Foto real de la pizza hecha
 
@@ -266,7 +285,7 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 ### 4. Likes
 
 - [ ] Permitir like a pizzas publicas.
-- [ ] Definir si requiere login o permite anonimo con limite.
+- [x] Definir que dar like requiere login y permite uno por usuario y pizza.
 - [ ] Mostrar contador de likes.
 - [ ] Ranking semanal/mensual.
 
@@ -277,6 +296,7 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 - [ ] Moderacion admin.
 - [ ] Reportar comentario.
 - [ ] Ocultar comentarios rechazados.
+- [ ] Mantener lectura publica y requerir login para crear comentarios.
 
 ## Fase Ofertas y marketing
 

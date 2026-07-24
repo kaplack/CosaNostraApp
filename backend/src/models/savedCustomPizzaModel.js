@@ -38,6 +38,22 @@ export const SavedCustomPizza = sequelize.define(
       field: 'estimated_price',
       validate: { min: 0 },
     },
+    slug: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      unique: true,
+    },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: 'is_public',
+    },
+    publishedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'published_at',
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -71,10 +87,22 @@ function mapSavedPizza(savedPizza) {
     baseName: plain.baseName,
     recipe: plain.recipe,
     estimatedPrice: Number(plain.estimatedPrice),
+    slug: plain.slug,
+    isPublic: plain.isPublic,
+    publishedAt: plain.publishedAt?.toISOString() || null,
     isActive: plain.isActive,
     createdAt: plain.createdAt.toISOString(),
     updatedAt: plain.updatedAt.toISOString(),
   };
+}
+
+function slugify(value) {
+  return String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'pizza';
 }
 
 export async function findSavedCustomPizzas(userId) {
@@ -113,4 +141,42 @@ export async function deleteSavedCustomPizza(userId, id) {
   await pizza.save();
 
   return mapSavedPizza(pizza);
+}
+
+export async function setSavedPizzaPublication(userId, id, isPublic) {
+  const pizza = await SavedCustomPizza.findOne({ where: { id, userId, isActive: true } });
+  if (!pizza) return null;
+
+  pizza.isPublic = isPublic;
+  if (isPublic) {
+    if (!pizza.slug) pizza.slug = `${slugify(pizza.name)}-${pizza.id}`;
+    pizza.publishedAt = new Date();
+  }
+  await pizza.save();
+
+  return mapSavedPizza(pizza);
+}
+
+export async function findPublicSavedPizzaBySlug(slug) {
+  const pizza = await SavedCustomPizza.findOne({
+    where: { slug, isPublic: true, isActive: true },
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['id', 'publicName', 'creatorSlug'],
+      where: { isActive: true },
+    }],
+  });
+  if (!pizza) return null;
+
+  const mapped = mapSavedPizza(pizza);
+  const plain = pizza.get({ plain: true });
+  return {
+    ...mapped,
+    creator: {
+      id: plain.user.id,
+      publicName: plain.user.publicName,
+      slug: plain.user.creatorSlug,
+    },
+  };
 }

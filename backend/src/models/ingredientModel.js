@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import { sequelize } from '../config/db.js';
 import { getObjectSignedUrl } from '../services/s3Service.js';
 
@@ -194,6 +194,16 @@ export async function findBuilderIngredients() {
       ['category', 'ASC'],
       ['name', 'ASC'],
     ],
+  });
+
+  return Promise.all(ingredients.map(mapIngredient));
+}
+
+export async function findIngredientsByIds(ids) {
+  if (!ids.length) return [];
+
+  const ingredients = await Ingredient.findAll({
+    where: { id: { [Op.in]: ids } },
   });
 
   return Promise.all(ingredients.map(mapIngredient));

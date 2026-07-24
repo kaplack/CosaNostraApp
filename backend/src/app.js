@@ -17,6 +17,7 @@ import builderRoutes from './routes/builderRoutes.js';
 import menuRoutes from './routes/menuRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentSettingRoutes from './routes/paymentSettingRoutes.js';
+import communityRoutes from './routes/communityRoutes.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/order', orderRoutes);
 app.use('/api/payment-settings', paymentSettingRoutes);
 app.use('/api/builder', builderRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/community', communityRoutes);
 app.use('/api/customer/addresses', customerAddressRoutes);
 app.use('/api/customer/pizzas', savedCustomPizzaRoutes);
 app.use('/api/admin/pizzas', adminPizzaRoutes);

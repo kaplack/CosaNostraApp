@@ -50,3 +50,17 @@ export async function deleteMySavedPizza(id) {
 
   return data;
 }
+
+export async function updateMySavedPizzaPublication(id, payload) {
+  const res = await fetch(`${API_URL}/customer/pizzas/${id}/publication`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+    headers: authHeaders(),
+  });
+  const { data } = await getJson(
+    res,
+    payload.isPublic ? 'No pudimos publicar la pizza' : 'No pudimos retirar la pizza',
+  );
+
+  return data;
+}

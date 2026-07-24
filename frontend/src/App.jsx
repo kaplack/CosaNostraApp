@@ -52,6 +52,7 @@ import CustomerSavedPizzas, {
   loader as customerSavedPizzasLoader,
 } from './features/customer/CustomerSavedPizzas';
 import PizzaBuilder from './features/builder/PizzaBuilder';
+import PublicPizza, { loader as publicPizzaLoader } from './features/community/PublicPizza';
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,12 @@ const router = createBrowserRouter([
       },
       { path: '/cart', element: <Cart /> },
       { path: '/builder', element: <PizzaBuilder /> },
+      {
+        path: '/p/:slug',
+        element: <PublicPizza />,
+        loader: publicPizzaLoader,
+        errorElement: <Error />,
+      },
       {
         path: '/order/new',
         element: <CreateOrder />,

@@ -2,8 +2,10 @@ import {
   createSavedCustomPizza,
   deleteSavedCustomPizza,
   findSavedCustomPizzas,
+  setSavedPizzaPublication,
   updateSavedCustomPizza,
 } from '../models/savedCustomPizzaModel.js';
+import { setPublicCreatorProfile, User } from '../models/userModel.js';
 
 function badRequest(message) {
   const err = new Error(message);
@@ -94,6 +96,34 @@ export async function updateMySavedPizza(req, res, next) {
 export async function deleteMySavedPizza(req, res, next) {
   try {
     const pizza = await deleteSavedCustomPizza(req.user.id, req.params.id);
+    if (!pizza) throw notFound('Pizza guardada no encontrada');
+
+    res.json({ status: 'success', data: pizza });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateMySavedPizzaPublication(req, res, next) {
+  try {
+    const isPublic = req.body.isPublic === true;
+
+    if (isPublic) {
+      const currentUser = await User.findByPk(req.user.id);
+      const publicName = String(
+        req.body.publicName || currentUser?.publicName || '',
+      ).trim();
+      if (publicName.length < 2 || publicName.length > 40) {
+        throw badRequest('El nombre publico debe tener entre 2 y 40 caracteres');
+      }
+      await setPublicCreatorProfile(req.user.id, publicName);
+    }
+
+    const pizza = await setSavedPizzaPublication(
+      req.user.id,
+      req.params.id,
+      isPublic,
+    );
     if (!pizza) throw notFound('Pizza guardada no encontrada');
 
     res.json({ status: 'success', data: pizza });
