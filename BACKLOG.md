@@ -290,6 +290,7 @@ Objetivo: dar a Cosa Nostra una identidad reconocible de pizzeria artesanal con 
   - Titulares condensados y expresivos; textos funcionales faciles de leer.
   - Botones y tarjetas con borde oscuro, sombra desplazada y estados accesibles.
   - Texturas de papel y semitono solo en superficies decorativas.
+  - Impact restaurada como fuente principal, permitiendo su inclinacion sintetica en titulares italic; Anton queda empaquetada como fallback para Android y otros dispositivos que no incluyen Impact.
 - [ ] Aplicar el sistema a Home como piloto:
   - [x] Header y navegacion.
   - [x] Hero de `Crea tu pizza`.

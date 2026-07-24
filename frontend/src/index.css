@@ -31,7 +31,9 @@ body {
   }
 
   .cn-display {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: Impact, 'Anton', Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-synthesis: style;
+    font-weight: 400;
     font-stretch: condensed;
     letter-spacing: -0.025em;
   }
