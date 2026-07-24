@@ -104,3 +104,23 @@ export async function uploadAdminIngredientImage(id, file) {
 
   return data;
 }
+
+export async function uploadAdminIngredientSelectorImage(id, file) {
+  const token = getStoredToken();
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_URL}/admin/ingredients/${id}/selector-image`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const { data } = await getJson(
+    res,
+    'No pudimos subir la imagen del selector',
+  );
+
+  return data;
+}

@@ -168,6 +168,31 @@ export async function uploadIngredientImage({ ingredientId, file }) {
   return key;
 }
 
+export async function uploadIngredientSelectorImage({ ingredientId, file }) {
+  assertValidImage(file);
+
+  if (!isS3Configured()) {
+    const err = new Error('S3 no esta configurado');
+    err.statusCode = 500;
+    throw err;
+  }
+
+  const extension = extensionByMimeType[file.mimetype];
+  const key = `${env.awsS3IngredientPrefix}/selectors/${ingredientId}-${randomUUID()}.${extension}`;
+
+  await sendS3(
+    new PutObjectCommand({
+      Bucket: env.awsS3Bucket,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    }),
+    key
+  );
+
+  return key;
+}
+
 export async function deleteObject(key) {
   if (!key || !isS3Configured()) return;
 

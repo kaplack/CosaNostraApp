@@ -91,10 +91,15 @@ Decisiones base:
   - `visualSizeCm`.
   - `supportsPartialArea`.
 - [x] Imagen transparente PNG/WebP para insumos en S3 `ingredient_img/`.
+- [x] Separar imagen de selector e imagen de render por ingrediente:
+  - Imagen de selector JPG/PNG/WebP reconocible en los controles.
+  - Imagen de render PNG/WebP transparente para capa o sprites.
+  - Usar la imagen de render como fallback mientras no exista imagen de selector.
 - [x] Render visual de capas y sprites.
 - [x] Evitar cornicione en toppings.
 - [x] Escala visual segun diametro real de pizza.
 - [x] Distribucion por tandas al presionar `+`.
+- [x] Escalar la cantidad visual de sprites por el multiplicador del tamano (por ejemplo, 4 pepperonis en personal y 7 en familiar).
 - [x] Separacion minima por categoria:
   - Proteina fuerte.
   - Vegetal media.
@@ -146,11 +151,14 @@ Objetivo: dejar la app lista para pruebas con pedidos reales supervisados.
   - [x] Dar protagonismo al preview de la pizza y reducir el scroll vertical.
   - [x] Separar la vista visual y el detalle de la receta mediante pestanas.
   - [x] Navegar categorias, ingredientes y cantidad mediante controles inferiores progresivos.
+  - [x] Agregar automaticamente la primera porcion al tocar un ingrediente con cantidad cero.
+  - [x] Reemplazar iconos genericos por iconos semanticos de pizza, tomate, queso, carne, vegetal y extras.
   - [x] Seleccionar toda, izquierda o derecha directamente sobre la pizza.
   - [x] Mostrar accesos laterales a los toppings agregados.
   - [x] Mantener tamanos, areas, porciones, pesos, precio, guardado y carrito.
   - [x] Conservar la experiencia existente en escritorio durante el prototipo movil.
   - [ ] Validar el prototipo funcional en celular antes de pulirlo o agregar drag-and-drop.
+  - [ ] Probar desde admin la carga separada de imagen de selector y render, especialmente para queso.
 - [ ] Completar datos reales:
   - Horarios.
   - WhatsApp.

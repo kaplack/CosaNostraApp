@@ -3,16 +3,20 @@ import { useDispatch } from 'react-redux';
 import {
   FiArrowLeft,
   FiCircle,
-  FiDroplet,
-  FiGrid,
-  FiLayers,
   FiList,
   FiMinus,
   FiPackage,
   FiPlus,
   FiShoppingCart,
-  FiStar,
 } from 'react-icons/fi';
+import {
+  GiCarrot,
+  GiCheeseWedge,
+  GiFullPizza,
+  GiHerbsBundle,
+  GiSteak,
+  GiTomato,
+} from 'react-icons/gi';
 import {
   getBuilderIngredients,
   getBuilderPizzaSizes,
@@ -38,12 +42,12 @@ const ingredientCategories = [
   ['extra', 'Extras'],
 ];
 const mobileCategoryIcons = {
-  base: FiCircle,
-  sauce: FiDroplet,
-  cheese: FiLayers,
-  protein: FiGrid,
-  vegetable: FiStar,
-  extra: FiPackage,
+  base: GiFullPizza,
+  sauce: GiTomato,
+  cheese: GiCheeseWedge,
+  protein: GiSteak,
+  vegetable: GiCarrot,
+  extra: GiHerbsBundle,
 };
 const TOPPING_MIN_RADIUS = 4;
 const TOPPING_MAX_RADIUS = 34;
@@ -123,6 +127,10 @@ function formatQuantity(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
 
+function ingredientSelectorImage(ingredient) {
+  return ingredient.selectorImageUrl || ingredient.imageUrl;
+}
+
 function ingredientTotalQuantity(item, selectedSize) {
   const sizeMultiplier = selectedSize?.portionMultiplier || 1;
   return item.ingredient.portionQuantity * item.portions * sizeMultiplier;
@@ -156,6 +164,7 @@ function distanceBetween(pointA, pointB) {
 
 function buildScatterSprites(scatterItems, selectedSize) {
   const placedSprites = [];
+  const sizeMultiplier = selectedSize?.portionMultiplier || 1;
 
   return scatterItems.flatMap((item) => {
     const sizePercent = spriteSizePercent(item.ingredient, selectedSize);
@@ -171,7 +180,12 @@ function buildScatterSprites(scatterItems, selectedSize) {
         ];
 
     return batches.flatMap((batch, batchIndex) => {
-      const count = batch.portions * item.ingredient.spritesPerPortion;
+      const rawCount =
+        batch.portions * item.ingredient.spritesPerPortion * sizeMultiplier;
+      const count =
+        item.ingredient.spritesPerPortion === 0
+          ? 0
+          : Math.max(1, Math.round(rawCount));
 
       return Array.from({ length: count }, (_, index) => {
         const baseSeed = hashSeed(
@@ -437,6 +451,10 @@ function PizzaBuilder() {
   }
 
   function openMobileIngredient(ingredient) {
+    const area = ingredient.supportsPartialArea ? selectedArea : 'whole';
+    const portions = selections[selectionKey(ingredient.id, area)]?.portions || 0;
+
+    if (portions === 0) changePortions(ingredient, 1);
     setMobileIngredientId(ingredient.id);
     setMobileStep('ingredient');
   }
@@ -594,7 +612,7 @@ function PizzaBuilder() {
                 onClick={() => setSelectedArea('whole')}
                 aria-label="Aplicar en toda la pizza"
                 aria-pressed={selectedArea === 'whole'}
-                className={`absolute left-1/2 top-1/2 z-10 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] text-[10px] font-black uppercase shadow-[3px_3px_0_#111312] transition ${selectedArea === 'whole' ? 'border-stone-950 bg-[#f9bd16]' : 'border-stone-950/70 bg-[#fff8e8]/85'}`}
+                className={`absolute left-1/2 top-1/2 z-10 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-dashed text-[10px] font-black uppercase transition ${selectedArea === 'whole' ? 'border-[#d7261e]/70 bg-[#d7261e]/[0.07] text-[#a51f19]/80' : 'border-stone-500/50 bg-[#fff8e8]/60 text-stone-600'}`}
               >
                 Toda
               </button>
@@ -747,7 +765,7 @@ function PizzaBuilder() {
                   className="relative grid h-11 w-11 shrink-0 place-items-center border-[2px] border-stone-950 bg-white shadow-[2px_2px_0_#111312]"
                   aria-label={`Editar ${item.ingredient.name}, ${formatArea(item.area)}`}
                 >
-                  {item.ingredient.imageUrl && <img src={item.ingredient.imageUrl} alt="" className="h-9 w-9 object-contain" />}
+                  {ingredientSelectorImage(item.ingredient) && <img src={ingredientSelectorImage(item.ingredient)} alt="" className="h-9 w-9 object-contain" />}
                   <span className="absolute -right-1 -top-1 rounded-full border border-stone-950 bg-[#f9bd16] px-1 text-[9px] font-black">{item.portions}</span>
                 </button>
               ))}
@@ -826,7 +844,7 @@ function PizzaBuilder() {
                   const portions = selections[selectionKey(ingredient.id, area)]?.portions || 0;
                   return (
                     <button type="button" key={ingredient.id} onClick={() => openMobileIngredient(ingredient)} className={`relative flex min-w-[78px] shrink-0 flex-col items-center border-[2px] border-stone-950 px-2 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0_#111312] ${portions ? 'bg-stone-950 text-white' : 'bg-[#fff8e8]'}`}>
-                      {ingredient.imageUrl ? <img src={ingredient.imageUrl} alt="" className="h-11 w-11 object-contain" /> : <span className="h-11" />}
+                      {ingredientSelectorImage(ingredient) ? <img src={ingredientSelectorImage(ingredient)} alt="" className="h-11 w-11 object-contain" /> : <span className="h-11" />}
                       <span className="mt-1 max-w-[70px] truncate">{ingredient.name}</span>
                       {portions > 0 && <span className="absolute right-1 top-1 rounded-full bg-[#d7261e] px-1.5 py-0.5 text-[9px] text-white">{portions}</span>}
                     </button>
@@ -837,7 +855,7 @@ function PizzaBuilder() {
 
             {mobileStep === 'ingredient' && mobileIngredient && (
               <div className="flex min-w-0 flex-1 items-center gap-3 border-[2px] border-stone-950 bg-[#fff8e8] p-2 shadow-[2px_2px_0_#111312]">
-                {mobileIngredient.imageUrl && <img src={mobileIngredient.imageUrl} alt="" className="h-14 w-14 shrink-0 object-contain" />}
+                {ingredientSelectorImage(mobileIngredient) && <img src={ingredientSelectorImage(mobileIngredient)} alt="" className="h-14 w-14 shrink-0 object-contain" />}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-black uppercase">{mobileIngredient.name}</p>
                   <p className="text-[10px] font-semibold text-stone-500">{formatArea(mobileIngredientArea)} · {formatQuantity(mobileIngredient.portionQuantity * mobileIngredientPortions * (selectedSize?.portionMultiplier || 1))} {mobileIngredient.unit}</p>
@@ -951,9 +969,9 @@ function PizzaBuilder() {
                     className="flex items-center justify-between gap-4 border-b border-stone-100 pb-3"
                   >
                     <div className="flex items-center gap-3">
-                      {ingredient.imageUrl ? (
+                      {ingredientSelectorImage(ingredient) ? (
                         <img
-                          src={ingredient.imageUrl}
+                          src={ingredientSelectorImage(ingredient)}
                           alt={ingredient.name}
                           className="h-10 w-10 rounded bg-stone-100 object-contain"
                         />

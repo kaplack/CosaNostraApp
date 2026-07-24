@@ -5,6 +5,7 @@ import {
   getAdminIngredients,
   updateAdminIngredient,
   uploadAdminIngredientImage,
+  uploadAdminIngredientSelectorImage,
 } from '../../services/apiAdminBuilder';
 import { clearSession, getCurrentAdmin } from '../../services/apiAuth';
 import Button from '../../ui/Button';
@@ -36,6 +37,7 @@ const emptyForm = {
   visualSizeCm: '4.5',
   supportsPartialArea: true,
   imageUrl: '',
+  selectorImageUrl: '',
   isAvailable: true,
   isActive: true,
 };
@@ -57,6 +59,7 @@ function ingredientToForm(ingredient) {
         : String(ingredient.visualSizeCm),
     supportsPartialArea: ingredient.supportsPartialArea,
     imageUrl: ingredient.imageUrl || '',
+    selectorImageUrl: ingredient.selectorImageUrl || '',
     isAvailable: ingredient.isAvailable,
     isActive: ingredient.isActive,
   };
@@ -72,7 +75,9 @@ function AdminIngredients() {
   const [filters, setFilters] = useState({ category: '', isAvailable: '' });
   const [editingIngredient, setEditingIngredient] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [selectorImageFile, setSelectorImageFile] = useState(null);
   const imageInputRef = useRef(null);
+  const selectorImageInputRef = useRef(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
 
@@ -123,7 +128,9 @@ function AdminIngredients() {
     setEditingIngredient(ingredient);
     setForm(ingredientToForm(ingredient));
     setImageFile(null);
+    setSelectorImageFile(null);
     if (imageInputRef.current) imageInputRef.current.value = '';
+    if (selectorImageInputRef.current) selectorImageInputRef.current.value = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -131,7 +138,9 @@ function AdminIngredients() {
     setEditingIngredient(null);
     setForm(emptyForm);
     setImageFile(null);
+    setSelectorImageFile(null);
     if (imageInputRef.current) imageInputRef.current.value = '';
+    if (selectorImageInputRef.current) selectorImageInputRef.current.value = '';
     setError('');
   }
 
@@ -164,6 +173,12 @@ function AdminIngredients() {
 
       if (imageFile) {
         await uploadAdminIngredientImage(savedIngredient.id, imageFile);
+      }
+      if (selectorImageFile) {
+        await uploadAdminIngredientSelectorImage(
+          savedIngredient.id,
+          selectorImageFile,
+        );
       }
       resetForm();
       await loadIngredients();
@@ -337,8 +352,8 @@ function AdminIngredients() {
             />
             Permite mitades
           </label>
-          <label className="space-y-1 md:col-span-2">
-            <span className="text-sm font-medium">URL ilustracion</span>
+          <label className="space-y-1 md:col-span-3">
+            <span className="text-sm font-medium">URL imagen sobre la pizza</span>
             <input
               name="imageUrl"
               value={form.imageUrl}
@@ -347,7 +362,8 @@ function AdminIngredients() {
             />
           </label>
           <label className="space-y-1 md:col-span-3">
-            <span className="text-sm font-medium">Imagen PNG/WebP transparente</span>
+            <span className="text-sm font-medium">Imagen sobre la pizza (PNG/WebP transparente)</span>
+            <span className="block text-xs text-stone-500">Se usa como capa o como topping distribuido sobre la masa.</span>
             <input
               ref={imageInputRef}
               type="file"
@@ -359,6 +375,29 @@ function AdminIngredients() {
               <p className="text-xs text-stone-500">
                 Archivo seleccionado: {imageFile.name}
               </p>
+            )}
+          </label>
+          <label className="space-y-1 md:col-span-3">
+            <span className="text-sm font-medium">URL imagen para selector</span>
+            <input
+              name="selectorImageUrl"
+              value={form.selectorImageUrl}
+              onChange={handleChange}
+              className="input w-full"
+            />
+          </label>
+          <label className="space-y-1 md:col-span-3">
+            <span className="text-sm font-medium">Imagen para selector (JPG/PNG/WebP)</span>
+            <span className="block text-xs text-stone-500">Debe representar el ingrediente de forma reconocible en los botones. Si falta, se usará la imagen de pizza.</span>
+            <input
+              ref={selectorImageInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => setSelectorImageFile(e.target.files?.[0] || null)}
+              className="block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:bg-yellow-400 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-stone-800 hover:file:bg-yellow-300"
+            />
+            {selectorImageFile && (
+              <p className="text-xs text-stone-500">Archivo seleccionado: {selectorImageFile.name}</p>
             )}
           </label>
         </div>
@@ -464,9 +503,9 @@ function AdminIngredients() {
                 <tr key={ingredient.id} className="border-b align-top">
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-3">
-                      {ingredient.imageUrl ? (
+                      {ingredient.selectorImageUrl || ingredient.imageUrl ? (
                         <img
-                          src={ingredient.imageUrl}
+                          src={ingredient.selectorImageUrl || ingredient.imageUrl}
                           alt={ingredient.name}
                           className="h-12 w-12 rounded bg-stone-100 object-contain"
                         />
@@ -477,6 +516,9 @@ function AdminIngredients() {
                       )}
                       <div>
                         <p className="font-semibold">{ingredient.name}</p>
+                        <p className="text-xs text-stone-500">
+                          {ingredient.selectorImageUrl ? 'Selector propio' : 'Selector usa imagen de pizza'}
+                        </p>
                         <p className="text-xs text-stone-500">
                           {ingredient.isAvailable ? 'Disponible' : 'No disponible'} /{' '}
                           {ingredient.isActive ? 'Activo' : 'Inactivo'}

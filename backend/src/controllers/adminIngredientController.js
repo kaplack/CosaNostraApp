@@ -7,7 +7,11 @@ import {
   INGREDIENT_VISUAL_MODES,
   updateIngredient,
 } from '../models/ingredientModel.js';
-import { deleteObject, uploadIngredientImage } from '../services/s3Service.js';
+import {
+  deleteObject,
+  uploadIngredientImage,
+  uploadIngredientSelectorImage,
+} from '../services/s3Service.js';
 
 function badRequest(message) {
   const err = new Error(message);
@@ -90,6 +94,9 @@ function normalizePayload(body, { partial = false } = {}) {
   }
 
   if (body.imageUrl !== undefined) payload.imageUrl = body.imageUrl?.trim() || null;
+  if (body.selectorImageUrl !== undefined) {
+    payload.selectorImageUrl = body.selectorImageUrl?.trim() || null;
+  }
   if (body.isAvailable !== undefined) {
     payload.isAvailable = Boolean(body.isAvailable);
   }
@@ -156,6 +163,30 @@ export async function uploadAdminIngredientImage(req, res, next) {
     const updatedIngredient = await updateIngredient(ingredient.id, {
       imageKey,
       imageUrl: null,
+    });
+
+    if (previousImageKey) await deleteObject(previousImageKey);
+
+    res.json({ status: 'success', data: updatedIngredient });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function uploadAdminIngredientSelectorImage(req, res, next) {
+  try {
+    const ingredient = await findIngredientInstance(req.params.id);
+    if (!ingredient) throw notFound('Insumo no encontrado');
+
+    const previousImageKey = ingredient.selectorImageKey;
+    const selectorImageKey = await uploadIngredientSelectorImage({
+      ingredientId: ingredient.id,
+      file: req.file,
+    });
+
+    const updatedIngredient = await updateIngredient(ingredient.id, {
+      selectorImageKey,
+      selectorImageUrl: null,
     });
 
     if (previousImageKey) await deleteObject(previousImageKey);

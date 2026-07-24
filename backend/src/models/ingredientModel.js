@@ -99,6 +99,16 @@ export const Ingredient = sequelize.define(
       allowNull: true,
       field: 'image_key',
     },
+    selectorImageUrl: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      field: 'selector_image_url',
+    },
+    selectorImageKey: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      field: 'selector_image_key',
+    },
     isAvailable: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -123,6 +133,12 @@ async function mapIngredient(ingredient) {
   const costPerPortion = Number(plain.costPerPortion);
   const pricePerPortion = Number(plain.pricePerPortion);
   const margin = pricePerPortion - costPerPortion;
+  const [imageUrl, selectorImageUrl] = await Promise.all([
+    plain.imageKey ? getObjectSignedUrl(plain.imageKey) : plain.imageUrl,
+    plain.selectorImageKey
+      ? getObjectSignedUrl(plain.selectorImageKey)
+      : plain.selectorImageUrl,
+  ]);
 
   return {
     id: plain.id,
@@ -142,10 +158,10 @@ async function mapIngredient(ingredient) {
         ? null
         : Number(plain.visualSizeCm),
     supportsPartialArea: plain.supportsPartialArea,
-    imageUrl: plain.imageKey
-      ? await getObjectSignedUrl(plain.imageKey)
-      : plain.imageUrl,
+    imageUrl,
     imageKey: plain.imageKey,
+    selectorImageUrl,
+    selectorImageKey: plain.selectorImageKey,
     isAvailable: plain.isAvailable,
     isActive: plain.isActive,
     createdAt: plain.createdAt.toISOString(),
