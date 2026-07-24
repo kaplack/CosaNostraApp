@@ -5,6 +5,7 @@ import { getPublicPizza } from '../../services/apiCommunity';
 import { formatCurrency } from '../../utils/helpers';
 import { addItem } from '../cart/cartSlice';
 import PizzaRecipePreview from './PizzaRecipePreview';
+import { createSharedPizzaCartItem } from './sharedPizza';
 
 function PublicPizza() {
   const pizza = useLoaderData();
@@ -12,21 +13,7 @@ function PublicPizza() {
   const navigate = useNavigate();
 
   function orderSharedPizza() {
-    dispatch(addItem({
-      pizzaId: `custom-shared-${pizza.id}-${Date.now()}`,
-      isCustom: true,
-      isShared: true,
-      savedPizzaId: pizza.id,
-      originalCreatorId: pizza.creator.id,
-      sharedPizzaSlug: pizza.slug,
-      savedPizzaName: pizza.name,
-      name: pizza.name,
-      baseName: pizza.baseName,
-      quantity: 1,
-      unitPrice: pizza.estimatedPrice,
-      totalPrice: pizza.estimatedPrice,
-      customRecipe: pizza.recipe,
-    }));
+    dispatch(addItem(createSharedPizzaCartItem(pizza, pizza.creator)));
     navigate('/cart');
   }
 
@@ -43,9 +30,9 @@ function PublicPizza() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#d7261e]">Pizza original</p>
             <h1 className="cn-display mt-2 text-5xl uppercase italic leading-[0.85] sm:text-7xl">{pizza.name}</h1>
-            <div className="mt-5 inline-flex items-center gap-2 border-2 border-stone-950 bg-white px-3 py-2 text-xs font-black uppercase">
+            <Link to={`/creadores/${pizza.creator.slug}`} className="mt-5 inline-flex items-center gap-2 border-2 border-stone-950 bg-white px-3 py-2 text-xs font-black uppercase transition hover:bg-[#f9bd16]">
               <FiUser /> Creada por {pizza.creator.publicName}
-            </div>
+            </Link>
             <p className="mt-5 text-sm font-semibold text-stone-600">
               {pizza.recipe.size.name} · {pizza.recipe.size.diameterCm} cm · {pizza.recipe.size.slices} tajadas
             </p>

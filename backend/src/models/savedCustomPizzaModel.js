@@ -180,3 +180,52 @@ export async function findPublicSavedPizzaBySlug(slug) {
     },
   };
 }
+
+export async function findPublicCreatorBySlug(slug) {
+  const creator = await User.findOne({
+    where: { creatorSlug: slug, isActive: true, role: 'customer' },
+    attributes: ['id', 'publicName', 'creatorSlug'],
+  });
+  if (!creator) return null;
+
+  const pizzas = await SavedCustomPizza.findAll({
+    where: { userId: creator.id, isPublic: true, isActive: true },
+    order: [['publishedAt', 'DESC']],
+  });
+
+  return {
+    creator: {
+      id: creator.id,
+      publicName: creator.publicName,
+      slug: creator.creatorSlug,
+    },
+    pizzas: pizzas.map(mapSavedPizza),
+  };
+}
+
+export async function findPublicCommunityPizzas(limit = 24) {
+  const pizzas = await SavedCustomPizza.findAll({
+    where: { isPublic: true, isActive: true },
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['id', 'publicName', 'creatorSlug'],
+      where: { isActive: true, role: 'customer' },
+    }],
+    order: [['publishedAt', 'DESC']],
+    limit,
+  });
+
+  return pizzas.map((pizza) => {
+    const mapped = mapSavedPizza(pizza);
+    const plain = pizza.get({ plain: true });
+    return {
+      ...mapped,
+      creator: {
+        id: plain.user.id,
+        publicName: plain.user.publicName,
+        slug: plain.user.creatorSlug,
+      },
+    };
+  });
+}

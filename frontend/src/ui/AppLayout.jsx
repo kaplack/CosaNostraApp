@@ -8,7 +8,7 @@ function AppLayout() {
   const navigation = useNavigation();
   const location = useLocation();
   const isLoading = navigation.state === 'loading';
-  const isFullWidthPage = ['/', '/menu'].includes(location.pathname);
+  const isFullWidthPage = ['/', '/menu', '/comunidad'].includes(location.pathname);
   //console.log(navigation)
 
   return (

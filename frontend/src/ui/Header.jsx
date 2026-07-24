@@ -66,6 +66,7 @@ function Header() {
               Crea tu pizza
             </NavLink>
             <NavLink to="/menu" className={navClass}>Carta</NavLink>
+            <NavLink to="/comunidad" className={navClass}>Comunidad</NavLink>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -81,6 +82,7 @@ function Header() {
               Crea tu pizza
             </NavLink>
             <NavLink to="/menu" className="border-2 border-stone-950 bg-[#fff8e8] px-4 py-3 text-center text-xs font-black uppercase tracking-wide text-stone-950">Carta</NavLink>
+            <NavLink to="/comunidad" className="border-2 border-stone-950 bg-[#fff8e8] px-4 py-3 text-center text-xs font-black uppercase tracking-wide text-stone-950">Comunidad</NavLink>
             <CustomerNav variant="mobileMenu" onNavigate={() => setIsMenuOpen(false)} />
           </nav>
         )}

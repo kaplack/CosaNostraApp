@@ -239,18 +239,26 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 
 ### 1.1 Perfiles de creadores
 
-- [ ] Pagina publica `/creadores/:slug`.
+- [x] Pagina publica `/creadores/:slug`.
 - [ ] Mostrar nombre publico, avatar y descripcion opcionales.
-- [ ] Mostrar pizzas publicadas por el creador.
+- [x] Mostrar nombre publico y cantidad de pizzas publicadas.
+- [x] Mostrar pizzas publicadas por el creador con render, precio y acceso al detalle.
+- [x] Permitir pedir directamente desde el perfil conservando la atribucion original.
+- [x] Enlazar el autor desde `/p/:slug` hacia su perfil.
 - [ ] Mostrar likes acumulados y numero de pedidos generados por sus pizzas.
-- [ ] No exponer email, telefono, direcciones ni nombre privado.
+- [x] No exponer email, telefono, direcciones ni nombre privado.
 - [ ] Permitir al creador editar o desactivar su perfil publico.
+- [ ] Validar visualmente el perfil en escritorio y celular.
 
 ### 1.2 Galeria de comunidad
 
-- [ ] Pagina `/comunidad` con pizzas publicas.
-- [ ] Ordenar por recientes, mas pedidas y mas gustadas.
-- [ ] Enlazar cada pizza y su creador.
+- [x] Pagina `/comunidad` con pizzas publicas.
+- [x] Agregar acceso `Comunidad` al menu principal en escritorio y movil.
+- [x] Ordenar inicialmente por publicaciones recientes.
+- [ ] Agregar orden por mas pedidas y mas gustadas cuando existan esas metricas.
+- [x] Enlazar cada pizza y su creador.
+- [x] Validar funcionamiento de la galeria, navegacion y enlaces principales.
+- [ ] Completar revision visual de la galeria en varios tamaños de escritorio y celular.
 
 ### 2. Foto real de la pizza hecha
 
@@ -273,8 +281,10 @@ Objetivo: convertir el constructor en una experiencia compartible que diferencie
 
 ### 3. Home con creaciones de clientes
 
-- [ ] Agregar seccion `Creaciones de la comunidad`.
-- [ ] Mostrar pizzas publicas aprobadas.
+- [x] Agregar seccion `Pizzas del barrio` / `Creaciones de la comunidad`.
+- [x] Mostrar las tres pizzas publicas mas recientes.
+- [x] Enlazar la seccion con la galeria `/comunidad`.
+- [ ] Incorporar moderacion/aprobacion antes de destacar contenido en Home.
 - [ ] Priorizar:
   - Con foto real.
   - Mas recientes.

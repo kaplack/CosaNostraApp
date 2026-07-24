@@ -4,6 +4,8 @@ import { GiWeightScale } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import { getMenu } from '../services/apiRestaurant';
 import { formatCurrency } from '../utils/helpers';
+import { getCommunityPizzas } from '../services/apiCommunity';
+import CommunityPizzaCard from '../features/community/CommunityPizzaCard';
 
 function PizzaPreview() {
   return (
@@ -30,6 +32,7 @@ const benefits = [
 
 function Home() {
   const [popularPizzas, setPopularPizzas] = useState([]);
+  const [communityPizzas, setCommunityPizzas] = useState([]);
 
   useEffect(function () {
     async function loadPopularPizzas() {
@@ -41,6 +44,15 @@ function Home() {
       }
     }
     loadPopularPizzas();
+
+    async function loadCommunityPizzas() {
+      try {
+        setCommunityPizzas(await getCommunityPizzas({ limit: 3 }));
+      } catch {
+        setCommunityPizzas([]);
+      }
+    }
+    loadCommunityPizzas();
   }, []);
 
   return (
@@ -142,6 +154,26 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {communityPizzas.length > 0 && (
+        <section className="relative border-t-[5px] border-stone-950 bg-[#1779a8] px-5 py-16 md:px-10 lg:px-14">
+          <div className="absolute -left-12 -top-12 h-40 w-40 rotate-12 bg-[#f9bd16] [clip-path:polygon(50%_0,61%_36%,98%_20%,70%_50%,100%_72%,62%_65%,52%_100%,40%_66%,4%_84%,29%_52%,0_32%,39%_36%)]" aria-hidden="true" />
+          <div className="relative mx-auto max-w-[1320px]">
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#f9bd16]">Creaciones de la comunidad</p>
+                <h2 className="cn-display mt-2 rotate-[-1deg] text-5xl uppercase italic text-white drop-shadow-[5px_5px_0_#111312] sm:text-7xl">Pizzas del barrio</h2>
+              </div>
+              <Link to="/comunidad" className="inline-flex items-center gap-2 border-[3px] border-stone-950 bg-[#f9bd16] px-5 py-3 text-xs font-black uppercase text-stone-950 shadow-[4px_4px_0_#111312]">
+                Ver todas <FiArrowRight />
+              </Link>
+            </div>
+            <div className="grid gap-8 md:grid-cols-3">
+              {communityPizzas.map((pizza, index) => <CommunityPizzaCard key={pizza.id} pizza={pizza} featured={index === 1} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="grid border-t-[5px] border-stone-950 md:grid-cols-2">
         <div className="relative overflow-hidden bg-[#1779a8] p-8 text-stone-100 md:p-12 lg:p-16">
